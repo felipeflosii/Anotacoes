@@ -1,0 +1,210 @@
+{
+  "main": {
+    "id": "d2c76a9c5b48e311",
+    "type": "split",
+    "children": [
+      {
+        "id": "2775fb81b6252550",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a50e722ab7d7a183",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Visualização em gráfico"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "d32deeca5278abea",
+    "type": "split",
+    "children": [
+      {
+        "id": "7d23bdc10bf25bec",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6d51d4602e75b8e3",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorador de arquivos"
+            }
+          },
+          {
+            "id": "ecea74b36a907306",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Procurar"
+            }
+          },
+          {
+            "id": "631369d4edc501fb",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Marcadores"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "22ba04072bfc5b17",
+    "type": "split",
+    "children": [
+      {
+        "id": "a626d12ea2f018ae",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "84af625bc693906e",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "01-Fundamentos/02 - MVC.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Links inversos para 02 - MVC"
+            }
+          },
+          {
+            "id": "1f094b5215b8700d",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "01-Fundamentos/02 - MVC.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Links de saída para 02 - MVC"
+            }
+          },
+          {
+            "id": "597c7481064df0fe",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Etiquetas"
+            }
+          },
+          {
+            "id": "9f00a4b25c0f3a82",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Todas as propriedades"
+            }
+          },
+          {
+            "id": "27e5d3353b70aeab",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "01-Fundamentos/02 - MVC.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Sumário de 02 - MVC"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir a troca rápida": false,
+      "graph:Abrir visualização em gráfico": false,
+      "canvas:Criar novo canvas": false,
+      "daily-notes:Abrir a nota de hoje": false,
+      "templates:Inserir modelo": false,
+      "command-palette:Abrir paleta de comandos": false,
+      "bases:Criar nova base": false
+    }
+  },
+  "active": "a50e722ab7d7a183",
+  "lastOpenFiles": [
+    "01-Fundamentos/03 - Clean Architecture.md",
+    "01-Fundamentos/02 - MVC.md",
+    "01-Fundamentos/04 - Arquitetura Hexagonal.md",
+    "01-Fundamentos/05 - Comparativo de Arquiteturas.md",
+    "02-Requisitos/06 - Entendendo o Problema.md",
+    "06-Templates/Template - Documento de Visão 1.md",
+    "06-Templates/Template - Documento de Visão.md",
+    "06-Templates/Template - Decisão de Arquitetura.md",
+    "02-Requisitos/07 - Requisitos Funcionais e Não-Funcionais.md",
+    "02-Requisitos/09 - Priorização com MoSCoW.md",
+    "04-Tecnologias/14 - Stack Recomendada para Projetos Acadêmicos.md",
+    "02-Requisitos/08 - User Stories.md",
+    "03-Arquitetura/11 - Estrutura de Pastas Clean Architecture.md",
+    "06-Templates/Template - User Story.md",
+    "05-Time/17 - Rituais de Time.md",
+    "03-Arquitetura/10 - Árvore de Decisão de Arquitetura.md",
+    "05-Time/16 - Divisão de Responsabilidades.md",
+    "05-Time/19 - Contrato de API.md",
+    "05-Time/18 - Lidando com Requisitos que Mudam.md",
+    "04-Tecnologias/13 - Como Escolher Tecnologias.md",
+    "04-Tecnologias/15 - Quando Adicionar Ferramentas.md",
+    "03-Arquitetura/12 - Regra de Dependência.md",
+    "01-Fundamentos/01 - Por que Arquitetura Existe.md",
+    "00-Maps/🔗 Mapa de Conexões.md",
+    "00-Maps/🗺️ Mapa Principal.md"
+  ]
+}

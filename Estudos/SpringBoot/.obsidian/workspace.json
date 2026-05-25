@@ -1,0 +1,240 @@
+{
+  "main": {
+    "id": "629f953fd50747ea",
+    "type": "split",
+    "children": [
+      {
+        "id": "64cfb12ece9f38b3",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e45fd01504d64095",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "12-Testes/43 - Testes Unitários com JUnit e Mockito.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "43 - Testes Unitários com JUnit e Mockito"
+            }
+          },
+          {
+            "id": "8ae9f9e53107a75c",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "12-Testes/43 - Testes Unitários com JUnit e Mockito.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "43 - Testes Unitários com JUnit e Mockito"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "7591aad9d4ad334d",
+    "type": "split",
+    "children": [
+      {
+        "id": "aeb33c0386d51d6a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6c345ea2c5000904",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorador de arquivos"
+            }
+          },
+          {
+            "id": "27688b26860aa4e2",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Procurar"
+            }
+          },
+          {
+            "id": "60145c69accb7f7a",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Marcadores"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 289.5
+  },
+  "right": {
+    "id": "23ec3fb51fedea04",
+    "type": "split",
+    "children": [
+      {
+        "id": "14e5a5dcfc5a4b55",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "756dfc2ef6bd3e7d",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "01-Fundamentos/05 - HTTP Fundamentos.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Links inversos para 05 - HTTP Fundamentos"
+            }
+          },
+          {
+            "id": "dd8d4cba299257d0",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "01-Fundamentos/02 - Spring vs Spring Boot vs Spring Framework.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Links de saída para 02 - Spring vs Spring Boot vs Spring Framework"
+            }
+          },
+          {
+            "id": "3579e16b6d3c17a5",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Etiquetas"
+            }
+          },
+          {
+            "id": "1e4f8fab25b38ada",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Todas as propriedades"
+            }
+          },
+          {
+            "id": "055456061ae567f0",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "01-Fundamentos/02 - Spring vs Spring Boot vs Spring Framework.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Sumário de 02 - Spring vs Spring Boot vs Spring Framework"
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "obsidian-excalidraw-plugin:New drawing": false,
+      "switcher:Abrir a troca rápida": false,
+      "graph:Abrir visualização em gráfico": false,
+      "canvas:Criar novo canvas": false,
+      "daily-notes:Abrir a nota de hoje": false,
+      "templates:Inserir modelo": false,
+      "command-palette:Abrir paleta de comandos": false,
+      "bases:Criar nova base": false
+    }
+  },
+  "active": "8ae9f9e53107a75c",
+  "lastOpenFiles": [
+    "10-Seguranca/37 - JWT Conceito e Implementação.md",
+    "02-Setup/08 - Maven vs Gradle.md",
+    "01-Fundamentos/04 - O que é uma API REST.md",
+    "13-Documentacao/45 - Swagger e OpenAPI.md",
+    "14-Performance/48 - Cache com Spring.md",
+    "14-Performance/47 - Problema N+1.md",
+    "14-Performance/46 - Lazy vs Eager Loading.md",
+    "16-Extras/56 - Docker para Spring Boot.md",
+    "16-Extras/55 - Profiles dev e prod.md",
+    "16-Extras/54 - Logs com SLF4J.md",
+    "08-Validacao/29 - Bean Validation.md",
+    "03-Arquitetura/13 - Organização de Pacotes e Boas Práticas.md",
+    "03-Arquitetura/11 - Clean Architecture no Spring Boot.md",
+    "01-Fundamentos/01 - O que é Spring Boot.md",
+    "Excalidraw/Drawing 2026-03-31 19.35.54.excalidraw.md",
+    "12-Testes/43 - Testes Unitários com JUnit e Mockito.md",
+    "Excalidraw",
+    "12-Testes/44 - Testes de Integração Spring Boot Test.md",
+    "15-ProjetoCompleto/49 - Projeto Concessionária - Visão Geral.md",
+    "07-BancoDados/27 - Flyway Migrations.md",
+    "15-ProjetoCompleto/51 - Projeto Concessionária - Controllers e DTOs.md",
+    "15-ProjetoCompleto/50 - Projeto Concessionária - Entidades.md",
+    "03-Arquitetura/12 - Controller Service Repository Domain DTO.md",
+    "03-Arquitetura/10 - Arquitetura em Camadas.md",
+    "01-Fundamentos/05 - HTTP Fundamentos.md",
+    "01-Fundamentos/03 - IoC e Injeção de Dependência.md",
+    "01-Fundamentos/02 - Spring vs Spring Boot vs Spring Framework.md",
+    "09-Excecoes",
+    "08-Validacao",
+    "07-BancoDados",
+    "06-Persistencia",
+    "05-DTOs",
+    "04-Controllers",
+    "03-Arquitetura"
+  ]
+}
