@@ -1,0 +1,16 @@
+{
+  "attachmentFolderPath": "assets",
+  "newFileLocation": "current",
+  "useMarkdownLinks": false,
+  "strictLineBreaks": false,
+  "showFrontmatter": false,
+  "defaultViewMode": "preview",
+  "enabledPlugins": [
+    "markdown-importer",
+    "tag-pane",
+    "graph",
+    "backlink",
+    "outgoing-link",
+    "outline"
+  ]
+}
