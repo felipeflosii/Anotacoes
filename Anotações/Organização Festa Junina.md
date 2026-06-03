@@ -7,7 +7,7 @@ data: 2026-06-13
 ---
 > [!info] **Visão Geral**
 > * **Total de Convidados:** 52 pessoas
-> * **Confirmados:** 24 | **Pistas:** 28
+> * **Confirmados:** 26 | **Pistas:** 26
 
 ---
 
@@ -37,8 +37,8 @@ data: 2026-06-13
 
 ## 👥 Controle de Presença
 
-> [!success] **Confirmadas (24 pessoas)**
-> Felipe, Jéssica, Mi, Lucimara, Kliss, Cafu, Nair, Camila, Augusto, Livia, Cleiton, Tia Edir, Kelly, Stefany, Lucas, Let, Abmael, Palmeirense, Arthur, Geovana (da Let), Vitoria, D. Lucia, Luiz, Gustavo.
+> [!success] **Confirmadas (26 pessoas)**
+> Felipe, Jéssica, Mi, Lucimara, Kliss, Cafu, Nair, Camila, Augusto, Livia, Cleiton, Tia Edir, Kelly, Stefany, Lucas, Let, Abmael, Palmeirense, Arthur, Geovana (da Let), Vitoria, D. Lucia, Luiz, Gustavo, Sensei, Manu.
 
-> [!question] **Não Confirmadas (28 pessoas)**
-> Douglas, Aline, Rodrigues, Sandra, Geovanna, Namorada da Geovana, Ronaldo, Gabi, Valentina, Rebeca, Adriana, George, Miguel, Helena, Onça, Mariane, Viviane, Sensei, Namorada do Sensei, Nelson, Cidinha, Júlia, Silmara, Zé, Kaique, Acompanhante da Silmara, Rui, Osmar.
+> [!question] **Não Confirmadas (26 pessoas)**
+> Douglas, Aline, Rodrigues, Sandra, Geovanna, Namorada da Geovana, Ronaldo, Gabi, Valentina, Rebeca, Adriana, George, Miguel, Helena, Onça, Mariane, Viviane, Nelson, Cidinha, Júlia, Silmara, Zé, Kaique, Acompanhante da Silmara, Rui, Osmar.

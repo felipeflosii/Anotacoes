@@ -4,53 +4,25 @@
     "type": "split",
     "children": [
       {
-        "id": "d60154fa75894568",
+        "id": "48eaa7ec4bc17caf",
         "type": "tabs",
         "children": [
           {
-            "id": "28cefb0aedcfa900",
+            "id": "c975d79de222c7e0",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Terminal/OCI & CLI/Linux_Azure_CLI.md",
+                "file": "Estudos/DevOps/01-Fundamentos/01 - O que é DevOps.md",
                 "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Linux_Azure_CLI"
+              "title": "01 - O que é DevOps"
             }
           },
           {
-            "id": "232cc4e08938a4e8",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Terminal/OCI & CLI/Linux_OCI_CLI.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Linux_OCI_CLI"
-            }
-          },
-          {
-            "id": "2a4e31f6fd4f61ed",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Anotações/Organização Festa Junina.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Organização Festa Junina"
-            }
-          },
-          {
-            "id": "5c6d06ebfd0a2fcd",
+            "id": "27fd1330705f9e4e",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -62,9 +34,23 @@
               "icon": "lucide-file",
               "title": "README"
             }
+          },
+          {
+            "id": "84f744583cb47c61",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Terminal/Linux/Linux_Arquivos_Pastas.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Linux_Arquivos_Pastas"
+            }
           }
         ],
-        "currentTab": 3
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -121,7 +107,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 363.5
   },
   "right": {
     "id": "d44663c7f41d480d",
@@ -137,7 +123,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "README.md",
+                "file": "Estudos/DevOps/01-Fundamentos/01 - O que é DevOps.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -147,7 +133,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Links inversos para README"
+              "title": "Links inversos para 01 - O que é DevOps"
             }
           },
           {
@@ -156,12 +142,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "README.md",
+                "file": "Estudos/DevOps/01-Fundamentos/01 - O que é DevOps.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Links de saída para README"
+              "title": "Links de saída para 01 - O que é DevOps"
             }
           },
           {
@@ -199,13 +185,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "README.md",
+                "file": "Estudos/DevOps/01-Fundamentos/01 - O que é DevOps.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Sumário de README"
+              "title": "Sumário de 01 - O que é DevOps"
             }
           }
         ]
@@ -226,36 +212,43 @@
       "bases:Criar nova base": false
     }
   },
-  "active": "5c6d06ebfd0a2fcd",
+  "active": "84f744583cb47c61",
   "lastOpenFiles": [
-    "Anotações/Organização Festa Junina.md",
-    "Anotações/ESP32 - Dual server.md",
-    "Anotações",
-    "Terminal/Linux/Linux_Config_Sistema.md",
-    "FIAP/Informações.md",
-    "Terminal/Git",
-    "Anotações/vm-challenge.md",
-    "Terminal/Linux",
-    "Terminal/Anotações",
-    "Terminal/Linux/Linux_Arquivos_Pastas.md",
-    "Linux/Áudio config.md",
     "Terminal/Git/Linux_Git.md",
+    "texto.md",
+    "README.md",
+    "Estudos/DevOps/01-Fundamentos/01 - O que é DevOps.md",
+    "Estudos/DevOps/06-Observabilidade/10 - Observabilidade.md",
+    "Estudos/DevOps/05-Escalabilidade/09 - Resiliência.md",
+    "Estudos/DevOps/05-Escalabilidade/08 - Alta Disponibilidade.md",
+    "Estudos/DevOps/05-Escalabilidade/07 - Escalabilidade.md",
+    "Estudos/DevOps/04-IaC/06 - Infraestrutura como Código (IaC).md",
+    "Estudos/DevOps/03-Automacao/05 - Automação.md",
+    "Estudos/DevOps/02-CICD/04 - CD — Entrega e Deploy Contínuos.md",
+    "Estudos/DevOps/02-CICD/03 - CI — Integração Contínua.md",
+    "Estudos/DevOps/01-Fundamentos/11 - O Fluxo Completo DevOps.md",
+    "Estudos/DevOps/01-Fundamentos/02 - Cultura DevOps e CALMS.md",
+    "Estudos/DevOps/00-MOC/🗺️ MOC — DevOps.md",
+    "Estudos/DevOps.zip",
+    "Estudos/DevOps/Roadmap/🛣️ Roadmap DevOps.md",
+    "Terminal/Docker/Docker - Referência de Comandos.md",
+    "Anotações/vm-model-cli.md",
+    "Estudos/Projetos/00-Maps/🗺️ Mapa Principal.md",
+    "Terminal/Linux/Linux_Config_Sistema.md",
+    "Terminal/Linux/Linux_Arquivos_Pastas.md",
+    "FIAP/GS/TOGAF.md",
+    "Estudos/SpringBoot/10-Seguranca/35 - Introdução ao Spring Security.md",
+    "FIAP/GS",
+    "Anotações/Organização Festa Junina.md",
     "Terminal/OCI & CLI/Linux_Azure_CLI.md",
     "Terminal/OCI & CLI/Linux_OCI_CLI.md",
-    "Terminal/Docker/Docker - Referência de Comandos.md",
+    "Anotações",
+    "Terminal/Git",
+    "Terminal/Linux",
+    "Terminal/Anotações",
     "Terminal/OCI & CLI",
     "Terminal/Docker",
-    "Linux/files/Linux_OCI_CLI.md",
-    "Linux/files/Linux_Git.md",
-    "Linux/files/Linux_Config_Sistema.md",
-    "Linux/files/Linux_Azure_CLI.md",
     "Linux/files",
-    "Linux/files.zip",
-    "Linux/Não confirmado 920911.crdownload",
-    "Estudos/Projetos/00-Maps/🗺️ Mapa Principal.md",
-    "Linux/Sudo cmds.md",
-    "Linux/Lista de cartas de som.md",
-    "README.md",
-    "Sem título.md"
+    "Linux/files.zip"
   ]
 }

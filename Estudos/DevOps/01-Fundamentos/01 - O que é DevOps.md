@@ -2,7 +2,6 @@
 tags: [devops, fundamentos]
 aliases: [DevOps, O que é DevOps]
 ---
-
 # 🚀 O que é DevOps?
 
 > [!quote] Definição
