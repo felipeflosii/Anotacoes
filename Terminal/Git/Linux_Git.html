@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Git — Referência de Comandos</title>
+  <style>
+    :root {
+      --bg-main: #121212;
+      --bg-card: #1e1e24;
+      --bg-code: #0a0a0d;
+      --border-color: #27272a;
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --primary-blue: #38bdf8;
+      --primary-purple: #c084fc;
+      --accent-red: #f87171;
+      --accent-amber: #fbbf24;
+      --accent-green: #34d399;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2.5rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+    }
+
+    .header-title-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: 2.25rem;
+      margin: 0;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .header p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 750px;
+      margin: 0.5rem auto 0;
+    }
+
+    /* Sections */
+    .section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+    }
+
+    .section-title svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    /* Subsections */
+    .subsection {
+      margin-top: 1.5rem;
+    }
+
+    .subsection-title {
+      font-size: 1.1rem;
+      color: var(--primary-blue);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--primary-blue);
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    code {
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      background: var(--bg-code);
+      color: var(--primary-purple);
+      padding: 0.2rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      border: 1px solid rgba(192, 132, 252, 0.2);
+    }
+
+    /* Code Blocks */
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .code-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .code-block pre {
+      margin: 0;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      font-size: 0.9rem;
+      color: #e4e4e7;
+      line-height: 1.5;
+    }
+
+    .code-comment {
+      color: #71717a;
+    }
+
+    /* Alert Box */
+    .alert-box {
+      background: rgba(248, 113, 113, 0.08);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      border-left: 4px solid var(--accent-red);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-top: 1.25rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .alert-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--accent-red);
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .alert-content h4 {
+      margin: 0 0 0.25rem 0;
+      color: var(--accent-red);
+      font-size: 1rem;
+    }
+
+    .alert-content p {
+      margin: 0;
+      color: var(--text-main);
+      font-size: 0.9rem;
+    }
+
+    /* References Grid */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      color: var(--text-main);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .link-card:hover {
+      border-color: var(--primary-blue);
+      transform: translateY(-2px);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .link-card svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .link-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .link-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .link-sub {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-title-container">
+        <svg class="header-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+        </svg>
+        <h1>Git — Referência de Comandos</h1>
+      </div>
+      <p>
+        Comandos do dia a dia para controle de versão com Git no terminal.
+      </p>
+    </header>
+
+    <!-- Iniciar -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        Iniciar
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>git init / clone</span></div>
+        <pre>git init                                  <span class="code-comment"># inicia repositório local</span>
+git clone https://github.com/user/repo   <span class="code-comment"># clona repositório remoto</span>
+git clone https://github.com/user/repo minha-pasta  <span class="code-comment"># clona em pasta específica</span></pre>
+      </div>
+    </section>
+
+    <!-- Configuração -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        Configuração
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>git config</span></div>
+        <pre>git config --global user.name "Seu Nome"
+git config --global user.email "email@exemplo.com"
+git config --global core.editor nano       <span class="code-comment"># editor padrão</span>
+git config --list                          <span class="code-comment"># exibe todas as configs</span></pre>
+      </div>
+    </section>
+
+    <!-- Status e Histórico -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+        </svg>
+        Status e Histórico
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>git status / log / diff</span></div>
+        <pre>git status                                 <span class="code-comment"># estado atual da árvore de trabalho</span>
+git log                                    <span class="code-comment"># histórico completo</span>
+git log --oneline                          <span class="code-comment"># histórico resumido (uma linha por commit)</span>
+git log --oneline --graph --all            <span class="code-comment"># grafo de branches</span>
+git diff                                   <span class="code-comment"># diff não staged</span>
+git diff --staged                          <span class="code-comment"># diff staged (pronto para commit)</span></pre>
+      </div>
+    </section>
+
+    <!-- Stage e Commit -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        Stage e Commit
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>git add / commit</span></div>
+        <pre>git add arquivo.txt                        <span class="code-comment"># adiciona arquivo específico</span>
+git add .                                  <span class="code-comment"># adiciona tudo</span>
+git add -p                                 <span class="code-comment"># adiciona por hunks (interativo)</span>
+
+git commit -m "mensagem"                   <span class="code-comment"># commit com mensagem</span>
+git commit -am "mensagem"                  <span class="code-comment"># stage + commit (só arquivos rastreados)</span>
+git commit --amend -m "nova mensagem"      <span class="code-comment"># corrige último commit</span></pre>
+      </div>
+    </section>
+
+    <!-- Branches -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+        </svg>
+        Branches
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>git branch / switch</span></div>
+        <pre>git branch                                 <span class="code-comment"># lista branches locais</span>
+git branch -a                              <span class="code-comment"># lista todas (local + remoto)</span>
+git branch minha-branch                    <span class="code-comment"># cria branch</span>
+git switch minha-branch                    <span class="code-comment"># muda para branch</span>
+git switch -c minha-branch                 <span class="code-comment"># cria e muda</span>
+git branch -d minha-branch                 <span class="code-comment"># deleta (seguro)</span>
+git branch -D minha-branch                 <span class="code-comment"># deleta forçado</span></pre>
+      </div>
+    </section>
+
+    <!-- Merge e Rebase -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+        </svg>
+        Merge e Rebase
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>git merge / rebase</span></div>
+        <pre>git merge minha-branch                    <span class="code-comment"># merge na branch atual</span>
+git merge --no-ff minha-branch             <span class="code-comment"># merge com commit de merge explícito</span>
+git rebase main                            <span class="code-comment"># reaplica commits em cima de main</span>
+git rebase -i HEAD~3                       <span class="code-comment"># rebase interativo (últimos 3 commits)</span></pre>
+      </div>
+    </section>
+
+    <!-- Remoto -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/>
+        </svg>
+        Remoto
+      </h2>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Configuração do Remoto</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>git remote</span></div>
+          <pre>git remote -v                              <span class="code-comment"># lista remotos</span>
+git remote add origin https://...          <span class="code-comment"># adiciona remoto</span>
+git remote remove origin                   <span class="code-comment"># remove remoto</span>
+git remote set-url origin https://...      <span class="code-comment"># troca URL do remoto</span></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Sincronização</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>git fetch / pull / push</span></div>
+          <pre>git fetch                                  <span class="code-comment"># baixa sem aplicar</span>
+git pull                                   <span class="code-comment"># fetch + merge</span>
+git pull --rebase                          <span class="code-comment"># fetch + rebase</span>
+git push origin main                       <span class="code-comment"># envia branch</span>
+git push -u origin main                    <span class="code-comment"># envia e define upstream</span>
+git push --force-with-lease                <span class="code-comment"># push forçado seguro</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tags -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+        </svg>
+        Tags
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>git tag</span></div>
+        <pre>git tag                                    <span class="code-comment"># lista tags</span>
+git tag v1.0.0                             <span class="code-comment"># tag leve</span>
+git tag -a v1.0.0 -m "Release v1.0.0"     <span class="code-comment"># tag anotada</span>
+git push origin v1.0.0                     <span class="code-comment"># envia tag</span>
+git push origin --tags                     <span class="code-comment"># envia todas as tags</span></pre>
+      </div>
+    </section>
+
+    <!-- Desfazer -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+        </svg>
+        Desfazer
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>git restore / reset / revert</span></div>
+        <pre>git restore arquivo.txt                    <span class="code-comment"># descarta alterações no working tree</span>
+git restore --staged arquivo.txt           <span class="code-comment"># remove do stage</span>
+git reset HEAD~1                           <span class="code-comment"># desfaz último commit (mantém arquivos)</span>
+git reset --hard HEAD~1                    <span class="code-comment"># desfaz commit e alterações</span>
+git revert abc1234                         <span class="code-comment"># cria commit que desfaz outro</span></pre>
+      </div>
+
+      <!-- Alert -->
+      <div class="alert-box">
+        <svg class="alert-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <div class="alert-content">
+          <h4>Cuidado com <code>--hard</code></h4>
+          <p>O comando <code>git reset --hard</code> descarta alterações permanentemente. Prefira <code>git restore</code> para casos simples.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stash -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1a2 2 0 01-2 2M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+        </svg>
+        Stash
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>git stash</span></div>
+        <pre>git stash                                  <span class="code-comment"># guarda alterações temporariamente</span>
+git stash push -m "descricao"              <span class="code-comment"># stash com nome</span>
+git stash list                             <span class="code-comment"># lista stashes</span>
+git stash pop                              <span class="code-comment"># aplica e remove o último</span>
+git stash apply stash@{1}                  <span class="code-comment"># aplica sem remover</span>
+git stash drop stash@{0}                   <span class="code-comment"># remove stash específico</span>
+git stash clear                            <span class="code-comment"># remove todos</span></pre>
+      </div>
+    </section>
+
+    <!-- Buscar -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        Buscar
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>git grep / log / blame</span></div>
+        <pre>git grep "termo"                           <span class="code-comment"># busca no código rastreado</span>
+git log --all --grep="mensagem"            <span class="code-comment"># busca em mensagens de commit</span>
+git log -S "codigo"                        <span class="code-comment"># commits que adicionaram/removeram string</span>
+git blame arquivo.txt                      <span class="code-comment"># quem alterou cada linha</span></pre>
+      </div>
+    </section>
+
+    <!-- Atalhos Úteis -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        Atalhos Úteis
+      </h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Comando</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>git switch -</code></td><td>Volta para a branch anterior</td></tr>
+            <tr><td><code>git log --oneline -10</code></td><td>Últimos 10 commits</td></tr>
+            <tr><td><code>git diff main..minha-branch</code></td><td>Diff entre branches</td></tr>
+            <tr><td><code>git cherry-pick abc1234</code></td><td>Traz commit específico para branch atual</td></tr>
+            <tr><td><code>git clean -fd</code></td><td>Remove arquivos não rastreados</td></tr>
+            <tr><td><code>git submodule add &lt;url&gt; pasta</code></td><td>Adiciona submódulo</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Documentação e Referências -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+        </svg>
+        Documentação e Referência
+      </h2>
+      <div class="links-grid">
+        <a href="https://git-scm.com/doc" target="_blank" class="link-card">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+          <div class="link-info">
+            <span class="link-title">Documentação Oficial do Git</span>
+            <span class="link-sub">git-scm.com/doc</span>
+          </div>
+        </a>
+        <a href="https://git-scm.com/book/pt-br/v2" target="_blank" class="link-card">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+          </svg>
+          <div class="link-info">
+            <span class="link-title">Pro Git Book (em Português)</span>
+            <span class="link-sub">git-scm.com/book/pt-br/v2</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+</body>
+</html>

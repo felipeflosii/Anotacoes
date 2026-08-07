@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux — Manipulação de Arquivos e Pastas</title>
+  <style>
+    :root {
+      --bg-main: #121212;
+      --bg-card: #1e1e24;
+      --bg-code: #0a0a0d;
+      --border-color: #27272a;
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --primary-blue: #38bdf8;
+      --primary-purple: #c084fc;
+      --accent-red: #f87171;
+      --accent-amber: #fbbf24;
+      --accent-green: #34d399;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2.5rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+    }
+
+    .header-title-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: 2.25rem;
+      margin: 0;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .header p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 750px;
+      margin: 0.5rem auto 0;
+    }
+
+    /* Sections */
+    .section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+    }
+
+    .section-title svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .section-note {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Subsections */
+    .subsection {
+      margin-top: 1.5rem;
+    }
+
+    .subsection-title {
+      font-size: 1.1rem;
+      color: var(--primary-blue);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--primary-blue);
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    code {
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      background: var(--bg-code);
+      color: var(--primary-purple);
+      padding: 0.2rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      border: 1px solid rgba(192, 132, 252, 0.2);
+    }
+
+    /* Code Blocks */
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .code-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .code-block pre {
+      margin: 0;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      font-size: 0.9rem;
+      color: #e4e4e7;
+      line-height: 1.5;
+    }
+
+    .code-comment {
+      color: #71717a;
+    }
+
+    /* Warning Box */
+    .alert-box {
+      background: rgba(248, 113, 113, 0.08);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      border-left: 4px solid var(--accent-red);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-top: 1.25rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .alert-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--accent-red);
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .alert-content h4 {
+      margin: 0 0 0.25rem 0;
+      color: var(--accent-red);
+      font-size: 1rem;
+    }
+
+    .alert-content p {
+      margin: 0;
+      color: var(--text-main);
+      font-size: 0.9rem;
+    }
+
+    /* References Grid */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      color: var(--text-main);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .link-card:hover {
+      border-color: var(--primary-blue);
+      transform: translateY(-2px);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .link-card svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .link-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .link-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .link-sub {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-title-container">
+        <svg class="header-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        <h1>Linux — Manipulação de Arquivos e Pastas</h1>
+      </div>
+      <p>
+        Referência rápida de comandos para criar, mover, copiar, renomear, deletar e inspecionar arquivos e diretórios no terminal.
+      </p>
+    </header>
+
+    <!-- Criar -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+        </svg>
+        Criar
+      </h2>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Arquivo vazio</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>touch</span></div>
+          <pre>touch arquivo.txt
+touch a.txt b.txt c.txt        <span class="code-comment"># múltiplos de uma vez</span></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Arquivo com conteúdo</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>echo / cat</span></div>
+          <pre>echo "conteúdo" > arquivo.txt  <span class="code-comment"># cria/sobrescreve</span>
+echo "linha" >> arquivo.txt    <span class="code-comment"># acrescenta ao final</span>
+cat > arquivo.txt              <span class="code-comment"># digita até Ctrl+D</span></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Pasta</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>mkdir</span></div>
+          <pre>mkdir pasta
+mkdir -p pai/filho/neto        <span class="code-comment"># cria toda a hierarquia de uma vez</span>
+mkdir -p src/{components,pages,utils}  <span class="code-comment"># múltiplas subpastas</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Copiar -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+        </svg>
+        Copiar
+      </h2>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Arquivo</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>cp</span></div>
+          <pre>cp origem.txt destino.txt
+cp origem.txt /caminho/pasta/          <span class="code-comment"># copia para pasta, mantém nome</span>
+cp -i origem.txt destino.txt           <span class="code-comment"># pede confirmação se já existir</span></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Pasta (requer -r)</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>cp -r</span></div>
+          <pre>cp -r pasta_origem pasta_destino
+cp -r pasta_origem /caminho/destino/
+cp -rp pasta_origem pasta_destino      <span class="code-comment"># preserva permissões e datas</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mover / Renomear -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+        </svg>
+        Mover / Renomear
+      </h2>
+      <p class="section-note">O comando <code>mv</code> serve para as duas operações: mover e renomear.</p>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Renomear</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>mv</span></div>
+          <pre>mv nome_antigo.txt nome_novo.txt
+mv pasta_antiga pasta_nova</pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Mover</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>mv</span></div>
+          <pre>mv arquivo.txt /caminho/destino/
+mv arquivo.txt /caminho/destino/novo_nome.txt   <span class="code-comment"># move e renomeia</span>
+mv *.txt /caminho/destino/                       <span class="code-comment"># move todos os .txt</span></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Com confirmação</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>mv -i / -n</span></div>
+          <pre>mv -i arquivo.txt destino/     <span class="code-comment"># pergunta antes de sobrescrever</span>
+mv -n arquivo.txt destino/     <span class="code-comment"># nunca sobrescreve</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deletar -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+        </svg>
+        Deletar
+      </h2>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Arquivo</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>rm</span></div>
+          <pre>rm arquivo.txt
+rm a.txt b.txt c.txt           <span class="code-comment"># múltiplos</span>
+rm *.log                       <span class="code-comment"># por padrão/glob</span>
+rm -i arquivo.txt              <span class="code-comment"># pede confirmação</span></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Pasta vazia</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>rmdir</span></div>
+          <pre>rmdir pasta
+rmdir -p pai/filho/neto        <span class="code-comment"># remove hierarquia vazia</span></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Pasta com conteúdo</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>rm -r / rm -rf</span></div>
+          <pre>rm -r pasta                    <span class="code-comment"># recursivo</span>
+rm -rf pasta                   <span class="code-comment"># recursivo + forçado (sem confirmação)</span></pre>
+        </div>
+      </div>
+
+      <!-- Alert -->
+      <div class="alert-box">
+        <svg class="alert-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <div class="alert-content">
+          <h4>Cuidado com <code>rm -rf</code></h4>
+          <p>Não há lixeira no terminal. O comando <code>rm -rf /caminho</code> é irreversível. Sempre confira o caminho antes de executar.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Listar e Inspecionar -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        Listar e Inspecionar
+      </h2>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Listar conteúdo</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>ls</span></div>
+          <pre>ls                             <span class="code-comment"># listagem simples</span>
+ls -l                          <span class="code-comment"># formato longo (permissões, tamanho, data)</span>
+ls -a                          <span class="code-comment"># inclui arquivos ocultos (.)</span>
+ls -lh                         <span class="code-comment"># tamanhos legíveis (KB, MB)</span>
+ls -lt                         <span class="code-comment"># ordena por data de modificação</span>
+ls -R                          <span class="code-comment"># lista recursivamente</span></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Ver onde você está</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>pwd</span></div>
+          <pre>pwd                            <span class="code-comment"># exibe o diretório atual</span></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Informações do arquivo</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>file / stat / du</span></div>
+          <pre>file arquivo.txt               <span class="code-comment"># tipo do arquivo</span>
+stat arquivo.txt               <span class="code-comment"># metadados completos (tamanho, datas, permissões)</span>
+du -sh pasta/                  <span class="code-comment"># tamanho total da pasta</span>
+du -sh *                       <span class="code-comment"># tamanho de cada item no diretório atual</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Links -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+        </svg>
+        Links
+      </h2>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Link simbólico (atalho)</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>ln -s</span></div>
+          <pre>ln -s /caminho/original link_nome     <span class="code-comment"># cria symlink</span>
+ln -sf /novo/caminho link_nome        <span class="code-comment"># atualiza symlink existente</span></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Link físico (hard link)</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>ln</span></div>
+          <pre>ln arquivo.txt link_nome</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Localizar Arquivos -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 16l2.879-2.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242zM21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        Localizar Arquivos
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>find / locate / which</span></div>
+        <pre>find . -name "arquivo.txt"            <span class="code-comment"># busca pelo nome exato</span>
+find . -name "*.log"                  <span class="code-comment"># busca por padrão</span>
+find . -type d -name "pasta"          <span class="code-comment"># busca somente diretórios</span>
+find . -type f -mtime -7              <span class="code-comment"># modificados nos últimos 7 dias</span>
+find . -size +10M                     <span class="code-comment"># maiores que 10 MB</span>
+find . -empty                         <span class="code-comment"># arquivos/pastas vazios</span>
+
+locate arquivo.txt                    <span class="code-comment"># busca rápida via índice (requer updatedb)</span>
+which python3                         <span class="code-comment"># localiza executável no PATH</span></pre>
+      </div>
+    </section>
+
+    <!-- Visualizar Conteúdo -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        Visualizar Conteúdo
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>cat / less / head / tail</span></div>
+        <pre>cat arquivo.txt                       <span class="code-comment"># exibe tudo de uma vez</span>
+less arquivo.txt                      <span class="code-comment"># paginado (q para sair)</span>
+head arquivo.txt                      <span class="code-comment"># primeiras 10 linhas</span>
+head -n 20 arquivo.txt                <span class="code-comment"># primeiras N linhas</span>
+tail arquivo.txt                      <span class="code-comment"># últimas 10 linhas</span>
+tail -n 20 arquivo.txt                <span class="code-comment"># últimas N linhas</span>
+tail -f arquivo.log                   <span class="code-comment"># acompanha em tempo real</span></pre>
+      </div>
+    </section>
+
+    <!-- Permissões -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+        Permissões
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>chmod / chown</span></div>
+        <pre>chmod 755 arquivo.sh                  <span class="code-comment"># rwxr-xr-x</span>
+chmod +x script.sh                    <span class="code-comment"># torna executável</span>
+chmod -R 644 pasta/                   <span class="code-comment"># aplica recursivamente</span>
+chown usuario:grupo arquivo.txt       <span class="code-comment"># muda dono e grupo</span>
+chown -R usuario:grupo pasta/         <span class="code-comment"># recursivo</span></pre>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Referência de permissões numéricas</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Número</th>
+                <th>Permissão</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><code>7</code></td><td><code>rwx</code> (leitura + escrita + execução)</td></tr>
+              <tr><td><code>6</code></td><td><code>rw-</code> (leitura + escrita)</td></tr>
+              <tr><td><code>5</code></td><td><code>r-x</code> (leitura + execução)</td></tr>
+              <tr><td><code>4</code></td><td><code>r--</code> (somente leitura)</td></tr>
+              <tr><td><code>0</code></td><td><code>---</code> (nenhuma)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compactar e Descompactar -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v1a2 2 0 01-2 2M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+        </svg>
+        Compactar e Descompactar
+      </h2>
+
+      <div class="subsection">
+        <h3 class="subsection-title">tar</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>tar</span></div>
+          <pre>tar -czf arquivo.tar.gz pasta/        <span class="code-comment"># compacta (gzip)</span>
+tar -xzf arquivo.tar.gz               <span class="code-comment"># descompacta</span>
+tar -tzf arquivo.tar.gz               <span class="code-comment"># lista conteúdo sem extrair</span>
+tar -xzf arquivo.tar.gz -C /destino/  <span class="code-comment"># extrai em pasta específica</span></pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">zip / unzip</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>zip / unzip</span></div>
+          <pre>zip -r arquivo.zip pasta/
+zip arquivo.zip a.txt b.txt
+unzip arquivo.zip
+unzip arquivo.zip -d /destino/</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Atalhos Úteis -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        Atalhos Úteis
+      </h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Comando</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>cd ~</code></td><td>Vai para o home do usuário</td></tr>
+            <tr><td><code>cd -</code></td><td>Volta para o diretório anterior</td></tr>
+            <tr><td><code>cd ..</code></td><td>Sobe um nível</td></tr>
+            <tr><td><code>cp -r src/ src_bak/</code></td><td>Faz backup rápido de uma pasta</td></tr>
+            <tr><td><code>mv arquivo{.txt,.bak}</code></td><td>Renomeia extensão com brace expansion</td></tr>
+            <tr><td><code>ls -lh | sort -k5 -h</code></td><td>Ordena listagem por tamanho</td></tr>
+            <tr><td><code>rm -rf pasta && mkdir pasta</code></td><td>Limpa e recria uma pasta</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Documentação e Referências -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+        </svg>
+        Documentação e Referência
+      </h2>
+      <div class="links-grid">
+        <a href="https://www.gnu.org/software/coreutils/manual/" target="_blank" class="link-card">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+          <div class="link-info">
+            <span class="link-title">GNU Coreutils Manual</span>
+            <span class="link-sub">gnu.org/software/coreutils</span>
+          </div>
+        </a>
+        <a href="https://man7.org/linux/man-pages/" target="_blank" class="link-card">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          <div class="link-info">
+            <span class="link-title">Linux Man Pages</span>
+            <span class="link-sub">man7.org/linux/man-pages</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+</body>
+</html>

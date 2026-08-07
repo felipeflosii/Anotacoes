@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure ACR & ACI - Guia Técnico e Arquitetura</title>
+    <style>
+        :root {
+            --bg-primary: #121212;
+            --bg-card: #1e1e24;
+            --bg-code: #0a0a0d;
+            --accent-blue: #38bdf8;
+            --accent-purple: #c084fc;
+            --accent-green: #4ade80;
+            --accent-amber: #fbbf24;
+            --accent-red: #f87171;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --border-color: #27272a;
+            --radius: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 880px;
+            width: 100%;
+        }
+
+        /* Header & Badges */
+        header {
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 2.1rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .badge-container {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.75rem;
+        }
+
+        .badge {
+            background-color: #18181b;
+            color: var(--accent-blue);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+        }
+
+        /* Icons */
+        .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+            flex-shrink: 0;
+        }
+
+        /* Callout Box */
+        .callout {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-blue);
+            padding: 1.25rem;
+            border-radius: var(--radius);
+            margin: 1.5rem 0;
+        }
+
+        .callout-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.6rem;
+            color: var(--accent-blue);
+        }
+
+        .callout.warning {
+            border-left-color: var(--accent-amber);
+        }
+        .callout.warning .callout-title {
+            color: var(--accent-amber);
+        }
+
+        .callout.question {
+            border-left-color: var(--accent-purple);
+        }
+        .callout.question .callout-title {
+            color: var(--accent-purple);
+        }
+
+        .callout.answer {
+            border-left-color: var(--accent-green);
+        }
+        .callout.answer .callout-title {
+            color: var(--accent-green);
+        }
+
+        /* Banner Alerta Gabarito */
+        .alert-banner {
+            background-color: rgba(251, 191, 36, 0.08);
+            border: 1px solid var(--accent-amber);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin: 2rem 0 1.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--accent-amber);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 3rem;
+        }
+
+        h2 {
+            font-size: 1.45rem;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        h3 {
+            font-size: 1.15rem;
+            color: var(--accent-blue);
+            margin: 1.5rem 0 0.75rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        ul {
+            color: var(--text-muted);
+            margin-left: 1.25rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* Arquitetura Vertical Customizada (Sem visual de imagem) */
+        .arch-vertical-flow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+            background-color: #16161a;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+
+        .arch-node {
+            width: 100%;
+            max-width: 520px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.9rem 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .arch-node-main {
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .arch-node-sub {
+            border-left: 4px solid var(--accent-purple);
+        }
+
+        .arch-node-storage {
+            border-left: 4px solid var(--accent-amber);
+        }
+
+        .arch-node-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .arch-node-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .arch-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--accent-blue);
+            font-size: 0.75rem;
+            font-weight: 600;
+            gap: 0.2rem;
+        }
+
+        .arch-arrow svg {
+            stroke: var(--accent-blue);
+        }
+
+        /* Tabelas */
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: #18181c;
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        td {
+            color: var(--text-muted);
+        }
+
+        /* Bloco de Código */
+        .code-wrapper {
+            position: relative;
+            margin: 1.25rem 0;
+            background-color: var(--bg-code);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #18181c;
+            padding: 0.45rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        pre {
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Fira Code', Consolas, Monaco, monospace;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            color: #e4e4e7;
+        }
+
+        /* Referências */
+        .reference-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        .ref-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: var(--radius);
+            text-decoration: none;
+            color: var(--text-main);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .ref-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-blue);
+        }
+
+        .ref-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .ref-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0 1rem 0;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>
+            <span class="icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M22 12.5V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h11"/><path d="M22 15l-3 3 3 3"/><path d="M11 18l-3-3 3-3"/></svg>
+            </span>
+            Azure ACR & ACI
+        </h1>
+        <p>Guia de Arquitetura, Diagnóstico e Boas Práticas em Nuvem</p>
+        <div class="badge-container">
+            <span class="badge">Azure</span>
+            <span class="badge">Containers</span>
+            <span class="badge">DevOps</span>
+            <span class="badge">Cloud Architecture</span>
+            <span class="badge">Serverless</span>
+        </div>
+    </header>
+
+    <!-- Resumo Executivo -->
+    <div class="callout">
+        <div class="callout-title">
+            <span class="icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            </span>
+            Resumo Executivo
+        </div>
+        <p>A combinação do <strong>Azure Container Registry (ACR)</strong> com o <strong>Azure Container Instances (ACI)</strong> viabiliza a execução de aplicações containerizadas sob o modelo <em>serverless</em>. O ACR atua como o repositório privado para governança de <em>docker images</em>, enquanto o ACI fornece o motor de execução isolado sem a necessidade de gerenciar servidores, VMs ou a complexidade de um <em>cluster</em> de Kubernetes (AKS).</p>
+    </div>
+
+    <!-- Seção 1: Análise Técnica -->
+    <section>
+        <h2>
+            <span class="icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            </span>
+            1. Análise e Resumo Técnico
+        </h2>
+
+        <h3>Visão Geral da Arquitetura (Fluxo Vertical)</h3>
+        
+        <!-- Componente de Arquitetura Limpo e Vertical -->
+        <div class="arch-vertical-flow">
+            <div class="arch-node arch-node-main">
+                <div>
+                    <div class="arch-node-title">
+                        <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M15 22v-4a48.4 48.4 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></span>
+                        GitHub Repository
+                    </div>
+                    <div class="arch-node-desc">Código fonte e Dockerfiles monitorados</div>
+                </div>
+                <span class="badge">Source</span>
+            </div>
+
+            <div class="arch-arrow">
+                <span>git commit / push</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+            </div>
+
+            <div class="arch-node arch-node-main">
+                <div>
+                    <div class="arch-node-title">
+                        <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+                        ACR Tasks (Cloud Build)
+                    </div>
+                    <div class="arch-node-desc">Build automático de imagens acionado por Webhook</div>
+                </div>
+                <span class="badge">CI Pipeline</span>
+            </div>
+
+            <div class="arch-arrow">
+                <span>auto build & tag</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+            </div>
+
+            <div class="arch-node arch-node-main">
+                <div>
+                    <div class="arch-node-title">
+                        <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>
+                        Azure Container Registry (ACR)
+                    </div>
+                    <div class="arch-node-desc">Repositório OCI privado com suporte a Criptografia</div>
+                </div>
+                <span class="badge">Registry</span>
+            </div>
+
+            <div class="arch-arrow">
+                <span>pull image</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+            </div>
+
+            <div class="arch-node arch-node-sub">
+                <div>
+                    <div class="arch-node-title">
+                        <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg></span>
+                        Azure Container Instances (ACI)
+                    </div>
+                    <div class="arch-node-desc">Execução Serverless: Containers MySQL, Java Spring e .NET</div>
+                </div>
+                <span class="badge" style="color: var(--accent-purple); border-color: rgba(192, 132, 252, 0.3);">Runtime</span>
+            </div>
+
+            <div class="arch-arrow">
+                <span>injeção de segredos & montagem SMB</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+            </div>
+
+            <div class="arch-node arch-node-storage">
+                <div>
+                    <div class="arch-node-title">
+                        <span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><path d="M21 2H3v16h18V2z"/><path d="M7 10h2v4H7v-4z"/><path d="M11 10h2v4h-2v-4z"/><path d="M15 10h2v4h-2v-4z"/></svg></span>
+                        Azure Key Vault & Azure Files
+                    </div>
+                    <div class="arch-node-desc">Segredos injetados via Env Vars + Volume SMB para MySQL</div>
+                </div>
+                <span class="badge" style="color: var(--accent-amber); border-color: rgba(251, 191, 36, 0.3);">Support Services</span>
+            </div>
+        </div>
+
+        <h3>Funcionamento Interno (Under the Hood)</h3>
+        
+        <div class="callout">
+            <div class="callout-title">
+                <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>
+                Azure Container Registry (ACR)
+            </div>
+            <ul>
+                <li><strong>Armazenamento e Criptografia:</strong> Armazena <em>docker images</em> e artefatos compatíveis com OCI. As imagens são salvas com criptografia automática (<em>at rest</em>).</li>
+                <li><strong>Controle de Acesso:</strong> Autenticação nativa com Microsoft Entra ID (Azure AD) via <em>Service Principals</em>, <em>Managed Identities</em> ou credenciais administrativas.</li>
+                <li><strong>CI/CD Nativo (ACR Tasks):</strong> Atua como um <em>pipeline</em> automático. Ao configurar uma <em>task</em> vinculada ao GitHub, <em>commits</em> acionam o <em>webhook</em> do ACR, compilando o <code>Dockerfile</code> e gerando a nova <em>tag</em> diretamente na nuvem.</li>
+            </ul>
+        </div>
+
+        <div class="callout">
+            <div class="callout-title">
+                <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+                Azure Container Instances (ACI)
+            </div>
+            <ul>
+                <li><strong>Isolamento de Hypervisor:</strong> Cada grupo de <em>containers</em> roda em uma mini-VM dedicada (<em>utility VM</em>), garantindo isolamento total em nível de <em>kernel</em>.</li>
+                <li><strong>Alocação e Faturamento:</strong> Especificação exata de vCPUs e memória RAM com faturamento por segundo de execução (<em>per-second billing</em>).</li>
+                <li><strong>Rede e Exposição:</strong> Mapeamento direto de IP público e suporte a FQDN para exposição de <em>endpoints</em> HTTP/HTTPS.</li>
+            </ul>
+        </div>
+
+        <div class="callout warning">
+            <div class="callout-title">
+                <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+                Persistência de Estado e Injeção de Segredos
+            </div>
+            <ul>
+                <li><strong>Persistência de Dados (Volumes):</strong> Como <em>containers</em> ACI são temporários (<em>ephemeral</em>), bancos relacionais como o MySQL utilizam montagem de <em>file share</em> via protocolo SMB provisionado no Azure Files, mapeando a pasta <code>/var/lib/mysql</code>.</li>
+                <li><strong>Segurança de Credentials:</strong> Segredos e <em>connection strings</em> são armazenados no Azure Key Vault e injetados na inicialização do <em>container</em> como <em>environment variables</em>.</li>
+            </ul>
+        </div>
+
+        <h3>Trade-Offs Arquiteturais</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aspecto</th>
+                        <th>Vantagens</th>
+                        <th>Limitações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>OpEx & Infraestrutura</strong></td>
+                        <td>Sem gestão de nós, atualizações de SO ou manutenção de <em>clusters</em>.</td>
+                        <td>Menos controle fino sobre parâmetros de rede e kernel do SO.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tempo de Subida</strong></td>
+                        <td><em>Cold start</em> rápido (poucos segundos).</td>
+                        <td>O <em>download</em> inicial da imagem (<em>pull</em>) pode gerar atrasos se o tamanho do artefato for elevado.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Escalabilidade</strong></td>
+                        <td>Ideal para cargas pontuais (<em>batch jobs</em>) e microsserviços simples.</td>
+                        <td>Ausência de <em>auto-scaling</em> horizontal avançado e <em>rolling updates</em> nativos sem queda de serviço.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>I/O de Banco de Dados</strong></td>
+                        <td>Facilidade para criar ambientes de dev/test com persistência em Azure Files.</td>
+                        <td>Latência do protocolo SMB em volumes montados pode limitar a taxa de transações (<em>IOPS</em>) em produção.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Seção 2: Comandos Essenciais -->
+    <section>
+        <h2>
+            <span class="icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            </span>
+            2. Comandos Essenciais e Guia de Referência
+        </h2>
+
+        <h3>Pipeline de Imagens (Build, Tag e Push)</h3>
+        <div class="code-wrapper">
+            <div class="code-header">
+                <span>bash - Pipeline Docker & ACR</span>
+            </div>
+            <pre><code># Autenticar a CLI na conta da Azure
+az login
+
+# Realizar o login no registro privado do ACR
+az acr login --name moneyhubrm9999
+
+# Criar tags direcionando as imagens locais para o namespace do ACR
+docker tag mysql-dimdim moneyhubrm9999.azurecr.io/mysql-dimdim:v1
+docker tag api-dimdim moneyhubrm9999.azurecr.io/api-dimdim:v1
+docker tag api-transacoes moneyhubrm9999.azurecr.io/api-transacoes:v1
+
+# Enviar as imagens marcadas para o repositório remoto no ACR
+docker push moneyhubrm9999.azurecr.io/mysql-dimdim:v1
+docker push moneyhubrm9999.azurecr.io/api-dimdim:v1
+docker push moneyhubrm9999.azurecr.io/api-transacoes:v1
+
+# Listar todos os repositórios cadastrados no ACR
+az acr repository list --name moneyhubrm9999 --output table
+
+# Exibir todas as tags disponíveis de um repositório específico
+az acr repository show-tags --name moneyhubrm9999 --repository mysql-dimdim</code></pre>
+        </div>
+
+        <h3>Gestão e Diagnóstico de Containers no ACI</h3>
+        <div class="code-wrapper">
+            <div class="code-header">
+                <span>bash - Inspecionar & Executar ACI</span>
+            </div>
+            <pre><code># Acompanhar os logs da aplicação em tempo real (streaming)
+az container logs --resource-group rg-money-hub --name api-java --follow
+
+# Iniciar uma sessão interativa bash dentro do container no ACI
+az container exec --resource-group rg-money-hub --name api-java --exec-command "/bin/bash"
+
+# Executar verificação de processos ativos dentro do container
+az container exec --resource-group rg-money-hub --name api-java --exec-command "ps aux"
+
+# Testar requisição HTTP interna diretamente do container
+az container exec --resource-group rg-money-hub --name api-java --exec-command "curl -X GET http://localhost:8080/api/transacoes"
+
+# Extrair o FQDN e IP Público atribuídos à instância do container
+fqdndotnet=$(az container show --resource-group rg-money-hub --name api-dotnet --query ipAddress.fqdn --output tsv)
+echo "FQDN da API: $fqdndotnet"</code></pre>
+        </div>
+    </section>
+
+    <!-- Seção 3: Exercícios -->
+    <section>
+        <h2>
+            <span class="icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            </span>
+            3. Desafios e Exercícios de Fixação
+        </h2>
+
+        <div class="callout question">
+            <div class="callout-title">
+                <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+                Cenário 1: Gargalo de I/O na Gravação do Banco de Dados
+            </div>
+            <p><strong>Situação:</strong> O <em>container</em> do MySQL rodando no ACI apresenta alta latência em operações de escrita intensiva. A investigação mostrou que a pasta <code>/var/lib/mysql</code> está montada em um <em>file share</em> do Azure Files via SMB.</p>
+            <p><strong>Exercício:</strong> Identifique a causa técnica da limitação de I/O e descreva a arquitetura recomendada para rodar o <em>database</em> em ambiente produtivo mantendo as APIs no ACI.</p>
+        </div>
+
+        <div class="callout question">
+            <div class="callout-title">
+                <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+                Cenário 2: Exposição de Credenciais no Script de Deploy
+            </div>
+            <p><strong>Situação:</strong> Um pipeline de CI/CD injeta a senha administrativa do banco via texto claro no parâmetro <code>--environment-variables MYSQL_PASSWORD=senha123</code> na CLI.</p>
+            <p><strong>Exercício:</strong> Explique o risco de vazamento dessa informação nos registros do Azure Resource Manager (ARM) e reestruture o fluxo para realizar a injeção segura via Azure Key Vault e Managed Identity.</p>
+        </div>
+
+        <div class="callout question">
+            <div class="callout-title">
+                <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+                Cenário 3: Indisponibilidade no Deploy de Novas Versões
+            </div>
+            <p><strong>Situação:</strong> Ao efetuar o <em>push</em> da versão <code>v2</code> de uma API e recriar o <em>container</em> no ACI, a aplicação passa por um período de <em>downtime</em> até a nova instância concluir o <em>startup</em>.</p>
+            <p><strong>Exercício:</strong> Como contornar a ausência de <em>rolling update</em> nativo no ACI para alcançar uma estratégia de <em>zero-downtime deployment</em> utilizando roteamento de tráfego?</p>
+        </div>
+
+        <div class="callout question">
+            <div class="callout-title">
+                <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+                Cenário 4: Otimização de Imagem Docker (Redução do Cold Start)
+            </div>
+            <p><strong>Situação:</strong> A <em>docker image</em> de uma API .NET ocupa 850 MB no ACR, fazendo com que o tempo de <em>pull</em> no ACI atrase a inicialização do serviço (<em>cold start</em>).</p>
+            <p><strong>Exercício:</strong> Escreva o conceito de um <code>Dockerfile</code> otimizado aplicando a técnica de <em>Multi-Stage Build</em> e utilização de imagens base <em>lightweight</em>.</p>
+        </div>
+    </section>
+
+    <!-- Seção 4: Gabarito das Respostas -->
+    <section>
+        <h2>
+            <span class="icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </span>
+            4. Gabarito e Solução dos Cenários
+        </h2>
+
+        <!-- Alerta Obrigatório -->
+        <div class="alert-banner">
+            <span class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+            Respostas dos cenários abaixo
+        </div>
+
+        <div class="callout answer">
+            <div class="callout-title">
+                <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></span>
+                Solução do Cenário 1: Gargalo de I/O na Gravação
+            </div>
+            <p><strong>Análise Técnica:</strong> O protocolo SMB via rede introduz alta latência de travamento de arquivo e sincronização por pacotes TCP, limitando severamente os IOPS em comparação com discos em bloco local.<br><br>
+            <strong>Arquitetura Recomendada:</strong> Para ambientes produtivos, substitua o MySQL em ACI por um serviço PaaS gerenciado como o <strong>Azure Database for MySQL (Flexible Server)</strong>, que utiliza armazenamento de alta performance (*Premium SSD*) e *auto-healing*, mantendo as APIs no ACI conectadas via String de Conexão segura.</p>
+        </div>
+
+        <div class="callout answer">
+            <div class="callout-title">
+                <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></span>
+                Solução do Cenário 2: Exposição de Credenciais no Deploy
+            </div>
+            <p><strong>Análise Técnica:</strong> Variáveis passadas via parâmetro da CLI ficam registradas nos históricos do runner de CI/CD e na API auditável do ARM em texto claro.<br><br>
+            <strong>Refatoração Segura:</strong> Armazene a senha no <strong>Azure Key Vault</strong>. Em seguida, habilite uma <strong>Managed Identity</strong> na instância do ACI e conceda a permissão de leitura (*Secret User*) no Key Vault. A aplicação lê o segredo via SDK/Identity sem expor segredos nos scripts de deploy.</p>
+        </div>
+
+        <div class="callout answer">
+            <div class="callout-title">
+                <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></span>
+                Solução do Cenário 3: Indisponibilidade no Deploy
+            </div>
+            <p><strong>Estratégia Blue/Green em ACI:</strong><br>
+            1. Mantenha a versão v1 rodando no <em>Container Group A (Blue)</em> atendendo o tráfego através de um roteador como <strong>Azure Application Gateway</strong> ou <strong>Azure Traffic Manager</strong>.<br>
+            2. Suba o novo <em>Container Group B (Green)</em> com a versão v2 em paralelo.<br>
+            3. Execute o teste de disponibilidade (*health check*) na v2.<br>
+            4. Redirecione o tráfego do roteador para o Container Group B e destrua o Container Group A.</p>
+        </div>
+
+        <div class="callout answer">
+            <div class="callout-title">
+                <span class="icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></span>
+                Solução do Cenário 4: Otimização de Imagem Docker
+            </div>
+            <p><strong>Conceito do Dockerfile Otimizado:</strong><br>
+            - Use a imagem do SDK completa (ex: <code>mcr.microsoft.com/dotnet/sdk:8.0</code>) apenas na primeira etapa (<em>build stage</em>) para compilar os binários.<br>
+            - Na etapa final (<em>runtime stage</em>), copie apenas os binários para uma imagem enxuta (ex: <code>mcr.microsoft.com/dotnet/aspnet:8.0-alpine</code> ou <em>distroless</em>).<br>
+            - Isso reduz o tamanho final de 850 MB para cerca de 100-150 MB, acelerando o *pull* no ACI.</p>
+        </div>
+    </section>
+
+    <!-- Seção 5: Documentação Oficial -->
+    <section>
+        <h2>
+            <span class="icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </span>
+            5. Documentação Oficial e Referências Técnicas
+        </h2>
+        <div class="reference-grid">
+            <a href="https://learn.microsoft.com/pt-br/azure/container-registry/" target="_blank" class="ref-card">
+                <div class="ref-title">
+                    <span class="icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></span>
+                    Azure Container Registry (ACR)
+                </div>
+                <div class="ref-desc">Documentação oficial com guias de gerenciamento de repositórios e autenticação.</div>
+            </a>
+            <a href="https://learn.microsoft.com/pt-br/azure/container-instances/" target="_blank" class="ref-card">
+                <div class="ref-title">
+                    <span class="icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></span>
+                    Azure Container Instances (ACI)
+                </div>
+                <div class="ref-desc">Visão geral do serviço serverless para execução rápida de contêineres.</div>
+            </a>
+            <a href="https://learn.microsoft.com/pt-br/azure/container-registry/container-registry-tasks-overview" target="_blank" class="ref-card">
+                <div class="ref-title">
+                    <span class="icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></span>
+                    Visão Geral do ACR Tasks
+                </div>
+                <div class="ref-desc">Como automatizar compilação e teste de imagens no Azure a cada commit.</div>
+            </a>
+            <a href="https://learn.microsoft.com/pt-br/azure/container-instances/container-instances-volume-azure-files" target="_blank" class="ref-card">
+                <div class="ref-title">
+                    <span class="icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></span>
+                    Montagem de Volumes com Azure Files
+                </div>
+                <div class="ref-desc">Persistência de dados montando compartilhamentos de arquivos no ACI.</div>
+            </a>
+            <a href="https://learn.microsoft.com/pt-br/azure/container-instances/container-instances-environment-variables" target="_blank" class="ref-card">
+                <div class="ref-title">
+                    <span class="icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></span>
+                    Segredos e Key Vault no ACI
+                </div>
+                <div class="ref-desc">Injeção segura de variáveis de ambiente e valores confidenciais.</div>
+            </a>
+            <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/" target="_blank" class="ref-card">
+                <div class="ref-title">
+                    <span class="icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></span>
+                    Boas Práticas de Dockerfile
+                </div>
+                <div class="ref-desc">Guia da Docker para otimização de imagens e multi-stage builds.</div>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <p>Guia Técnico de Estudos — Azure DevOps & Cloud Computing</p>
+    </footer>
+
+</div>
+
+</body>
+</html>

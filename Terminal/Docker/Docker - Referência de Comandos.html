@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docker — Referência de Comandos</title>
+  <style>
+    :root {
+      --bg-main: #121212;
+      --bg-card: #1e1e24;
+      --bg-code: #0a0a0d;
+      --border-color: #27272a;
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --primary-blue: #38bdf8;
+      --primary-purple: #c084fc;
+      --accent-cyan: #22d3ee;
+      --accent-amber: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2.5rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+    }
+
+    .header-title-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: 2.25rem;
+      margin: 0;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .description-box {
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-top: 1.25rem;
+      text-align: left;
+    }
+
+    .description-box h3 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      color: var(--primary-blue);
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .description-box p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Sections */
+    .section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+    }
+
+    .section-title svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .section-subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: -0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--primary-blue);
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    code {
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      background: var(--bg-code);
+      color: var(--primary-purple);
+      padding: 0.2rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      border: 1px solid rgba(192, 132, 252, 0.2);
+      white-space: nowrap;
+    }
+
+    /* Vertical Lifecycle Flow Component */
+    .flow-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin: 1.25rem 0;
+    }
+
+    .flow-step {
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--primary-purple);
+      border-radius: 8px;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .flow-cmd {
+      font-family: monospace;
+      color: var(--primary-purple);
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    .flow-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .flow-badge {
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--primary-blue);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .flow-arrow {
+      display: flex;
+      justify-content: center;
+      color: var(--primary-blue);
+      margin: -0.1rem 0;
+    }
+
+    .flow-arrow svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    /* Subsections inside section */
+    .subsection {
+      margin-top: 1.75rem;
+    }
+
+    .subsection-title {
+      font-size: 1.15rem;
+      color: var(--primary-blue);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .subsection-title svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+
+    /* Concept Cards Grid */
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .card-item {
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+    }
+
+    .card-item h4 {
+      margin: 0 0 0.4rem 0;
+      color: var(--primary-blue);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-item p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    /* Code Blocks */
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .code-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .code-block pre {
+      margin: 0;
+      padding: 1.25rem;
+      overflow-x: auto;
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      font-size: 0.9rem;
+      color: #e4e4e7;
+      line-height: 1.5;
+    }
+
+    .code-comment {
+      color: #71717a;
+    }
+
+    /* References Grid */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      color: var(--text-main);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .link-card:hover {
+      border-color: var(--primary-blue);
+      transform: translateY(-2px);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .link-card svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .link-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .link-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .link-sub {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-title-container">
+        <svg class="header-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+        </svg>
+        <h1>Docker — Referência de Comandos</h1>
+      </div>
+      <div class="description-box">
+        <h3>
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          O que é Docker?
+        </h3>
+        <p>
+          Docker é uma plataforma para criar, empacotar e executar aplicações em containers isolados. Um container é como uma "caixa" que contém o aplicativo mais todas as dependências, rodando de forma consistente em qualquer ambiente.
+        </p>
+      </div>
+    </header>
+
+    <!-- Comandos Comuns -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+        </svg>
+        Comandos Comuns (Common Commands)
+      </h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Comando</th>
+              <th>O que faz</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>docker run</code></td><td>Cria e inicia um novo container a partir de uma imagem</td></tr>
+            <tr><td><code>docker exec</code></td><td>Executa um comando dentro de um container já em execução</td></tr>
+            <tr><td><code>docker ps</code></td><td>Lista containers em execução (use <code>-a</code> para ver todos)</td></tr>
+            <tr><td><code>docker build</code></td><td>Constrói uma imagem a partir de um Dockerfile</td></tr>
+            <tr><td><code>docker bake</code></td><td>Constrói imagens a partir de um arquivo de configuração (bake file)</td></tr>
+            <tr><td><code>docker pull</code></td><td>Baixa uma imagem do registry (ex: Docker Hub)</td></tr>
+            <tr><td><code>docker push</code></td><td>Envia uma imagem local para um registry</td></tr>
+            <tr><td><code>docker images</code></td><td>Lista todas as imagens disponíveis localmente</td></tr>
+            <tr><td><code>docker login</code></td><td>Autentica em um registry (ex: Docker Hub, GHCR)</td></tr>
+            <tr><td><code>docker logout</code></td><td>Encerra a sessão do registry</td></tr>
+            <tr><td><code>docker search</code></td><td>Busca imagens disponíveis no Docker Hub</td></tr>
+            <tr><td><code>docker version</code></td><td>Exibe a versão do Docker instalada</td></tr>
+            <tr><td><code>docker info</code></td><td>Exibe informações do sistema Docker (containers, imagens, recursos)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Comandos de Gerenciamento -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V7M3 7L12 3l9 4M3 7l9 4 9-4M12 11v9"/>
+        </svg>
+        Comandos de Gerenciamento (Management Commands)
+      </h2>
+      <p class="section-subtitle">
+        Management Commands vs Common Commands: organizam os recursos por categoria e permitem subcomandos mais específicos (ex: <code>docker container ls</code>, <code>docker volume inspect</code>).
+      </p>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Comando</th>
+              <th>O que gerencia</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>docker builder</code></td><td>Builds (histórico, cache, pruning)</td></tr>
+            <tr><td><code>docker buildx</code></td><td>Builds avançados com suporte a multi-plataforma</td></tr>
+            <tr><td><code>docker compose</code></td><td>Orquestração de múltiplos containers com <code>docker-compose.yml</code></td></tr>
+            <tr><td><code>docker container</code></td><td>Gerencia containers individualmente</td></tr>
+            <tr><td><code>docker context</code></td><td>Gerencia contextos de conexão com daemons remotos</td></tr>
+            <tr><td><code>docker image</code></td><td>Gerencia imagens (build, tag, inspect, prune)</td></tr>
+            <tr><td><code>docker manifest</code></td><td>Gerencia manifestos de imagens multi-plataforma</td></tr>
+            <tr><td><code>docker model</code></td><td>Docker Model Runner (execução de modelos de IA localmente)</td></tr>
+            <tr><td><code>docker network</code></td><td>Gerencia redes (criação, remoção, inspeção)</td></tr>
+            <tr><td><code>docker plugin</code></td><td>Gerencia plugins instalados no Docker</td></tr>
+            <tr><td><code>docker system</code></td><td>Operações globais do sistema (prune, df, events)</td></tr>
+            <tr><td><code>docker volume</code></td><td>Gerencia volumes para persistência de dados</td></tr>
+            <tr><td><code>docker swarm</code></td><td>Orquestração nativa de containers em cluster (Swarm mode)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Comandos Avançados -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        Comandos Avançados
+      </h2>
+
+      <!-- Ciclo de Vida -->
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+          </svg>
+          Ciclo de Vida de Containers (Fluxo)
+        </h3>
+        <div class="flow-container">
+          <div class="flow-step">
+            <span class="flow-cmd">docker create</span>
+            <span class="flow-desc">Cria um container sem iniciá-lo</span>
+            <span class="flow-badge">Criado</span>
+          </div>
+          <div class="flow-arrow">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+          </div>
+          <div class="flow-step">
+            <span class="flow-cmd">docker start / docker run</span>
+            <span class="flow-desc">Inicia a execução do container</span>
+            <span class="flow-badge">Em Execução</span>
+          </div>
+          <div class="flow-arrow">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+          </div>
+          <div class="flow-step">
+            <span class="flow-cmd">docker pause / unpause</span>
+            <span class="flow-desc">Pausa ou retoma os processos dentro do container</span>
+            <span class="flow-badge">Pausado</span>
+          </div>
+          <div class="flow-arrow">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+          </div>
+          <div class="flow-step">
+            <span class="flow-cmd">docker stop / kill / restart</span>
+            <span class="flow-desc">Para de forma graciosa (SIGTERM), imediata (SIGKILL) ou reinicia</span>
+            <span class="flow-badge">Parado</span>
+          </div>
+          <div class="flow-arrow">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+            </svg>
+          </div>
+          <div class="flow-step">
+            <span class="flow-cmd">docker rm</span>
+            <span class="flow-desc">Remove um ou mais containers do sistema (docker wait aguarda término)</span>
+            <span class="flow-badge">Removido</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inspeção e Debug -->
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          Inspeção e Debug
+        </h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr><th>Comando</th><th>O que faz</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>docker logs</code></td><td>Exibe os logs de um container</td></tr>
+              <tr><td><code>docker inspect</code></td><td>Retorna informações detalhadas (JSON) de qualquer objeto Docker</td></tr>
+              <tr><td><code>docker stats</code></td><td>Mostra uso de CPU, memória e rede em tempo real</td></tr>
+              <tr><td><code>docker top</code></td><td>Lista os processos em execução dentro de um container</td></tr>
+              <tr><td><code>docker diff</code></td><td>Mostra alterações no sistema de arquivos do container</td></tr>
+              <tr><td><code>docker events</code></td><td>Exibe eventos em tempo real do daemon Docker</td></tr>
+              <tr><td><code>docker port</code></td><td>Lista os mapeamentos de porta de um container</td></tr>
+              <tr><td><code>docker attach</code></td><td>Conecta o terminal local aos streams de um container em execução</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Arquivos e Imagens -->
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
+          </svg>
+          Arquivos e Imagens
+        </h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr><th>Comando</th><th>O que faz</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>docker cp</code></td><td>Copia arquivos entre o host e um container</td></tr>
+              <tr><td><code>docker commit</code></td><td>Cria uma nova imagem a partir das alterações de um container</td></tr>
+              <tr><td><code>docker tag</code></td><td>Cria uma tag para uma imagem (ex: <code>myapp:v1.0</code>)</td></tr>
+              <tr><td><code>docker rmi</code></td><td>Remove uma ou mais imagens locais</td></tr>
+              <tr><td><code>docker history</code></td><td>Exibe o histórico de camadas de uma imagem</td></tr>
+              <tr><td><code>docker save</code></td><td>Salva uma imagem em um arquivo <code>.tar</code></td></tr>
+              <tr><td><code>docker load</code></td><td>Carrega uma imagem de um arquivo <code>.tar</code></td></tr>
+              <tr><td><code>docker export</code></td><td>Exporta o filesystem de um container como <code>.tar</code></td></tr>
+              <tr><td><code>docker import</code></td><td>Cria uma imagem a partir de um <code>.tar</code> exportado</td></tr>
+              <tr><td><code>docker update</code></td><td>Atualiza configurações de recursos de um container em execução</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Opções Globais -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 002 2h1.5a2.5 2.5 0 002.5-2.5V14M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        Opções Globais (Global Options)
+      </h2>
+      <p class="section-subtitle">
+        Estas opções vão antes do comando. Ex: <code>docker --debug ps</code> ou <code>docker -H tcp://host:2376 ps</code>
+      </p>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr><th>Flag</th><th>O que faz</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>--config &lt;path&gt;</code></td><td>Define o diretório de configuração do cliente (padrão: <code>~/.docker</code>)</td></tr>
+            <tr><td><code>-c, --context &lt;nome&gt;</code></td><td>Usa um contexto específico para conectar ao daemon</td></tr>
+            <tr><td><code>-D, --debug</code></td><td>Ativa o modo debug (logs detalhados)</td></tr>
+            <tr><td><code>-H, --host &lt;socket&gt;</code></td><td>Define o socket do daemon Docker a conectar</td></tr>
+            <tr><td><code>-l, --log-level</code></td><td>Define o nível de log: <code>debug</code>, <code>info</code>, <code>warn</code>, <code>error</code>, <code>fatal</code></td></tr>
+            <tr><td><code>--tls</code></td><td>Força uso de TLS na conexão</td></tr>
+            <tr><td><code>--tlsverify</code></td><td>Usa TLS e verifica o certificado remoto</td></tr>
+            <tr><td><code>--tlscacert &lt;path&gt;</code></td><td>Certificado CA confiável para TLS</td></tr>
+            <tr><td><code>--tlscert &lt;path&gt;</code></td><td>Caminho para o certificado TLS do cliente</td></tr>
+            <tr><td><code>--tlskey &lt;path&gt;</code></td><td>Caminho para a chave privada TLS</td></tr>
+            <tr><td><code>-v, --version</code></td><td>Imprime a versão e encerra</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Conceitos Relacionados -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11 4a2 2 0 114 0v1a2 2 0 002 2h1a2 2 0 110 4h-1a2 2 0 00-2 2v1a2 2 0 11-4 0v-1a2 2 0 00-2-2H7a2 2 0 110-4h1a2 2 0 002-2V4z"/>
+        </svg>
+        Conceitos Relacionados
+      </h2>
+      <div class="grid-cards">
+        <div class="card-item">
+          <h4>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+            Docker Compose
+          </h4>
+          <p>Orquestração de múltiplos serviços e containers integrados.</p>
+        </div>
+        <div class="card-item">
+          <h4>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Dockerfile
+          </h4>
+          <p>Arquivo de receita declarativo para definir como buildar uma imagem.</p>
+        </div>
+        <div class="card-item">
+          <h4>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+            </svg>
+            Docker Volumes
+          </h4>
+          <p>Mecanismo para persistência de dados fora do ciclo de vida do container.</p>
+        </div>
+        <div class="card-item">
+          <h4>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            Docker Networks
+          </h4>
+          <p>Isolamento e comunicação de rede entre múltiplos containers.</p>
+        </div>
+        <div class="card-item">
+          <h4>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/>
+            </svg>
+            Docker Hub
+          </h4>
+          <p>Registry público oficial para armazenamento e distribuição de imagens.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exemplos Rápidos -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        Exemplos Rápidos
+      </h2>
+      <div class="code-block">
+        <div class="code-header">
+          <span>bash</span>
+          <span>Docker CLI</span>
+        </div>
+        <pre><span class="code-comment"># Subir um container do PostgreSQL</span>
+docker run -d -e POSTGRES_PASSWORD=senha -p 5432:5432 postgres
+
+<span class="code-comment"># Ver logs em tempo real</span>
+docker logs -f meu-container
+
+<span class="code-comment"># Entrar no bash de um container em execução</span>
+docker exec -it meu-container bash
+
+<span class="code-comment"># Remover todos os containers parados</span>
+docker container prune
+
+<span class="code-comment"># Ver uso de espaço em disco pelo Docker</span>
+docker system df</pre>
+      </div>
+    </section>
+
+    <!-- Referências -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+        </svg>
+        Documentação e Referência
+      </h2>
+      <div class="links-grid">
+        <a href="https://docs.docker.com" target="_blank" class="link-card">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+          <div class="link-info">
+            <span class="link-title">Documentação Oficial</span>
+            <span class="link-sub">docs.docker.com</span>
+          </div>
+        </a>
+        <div class="link-card" style="cursor: default;">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          <div class="link-info">
+            <span class="link-title">Ajuda Interna CLI</span>
+            <span class="link-sub"><code>docker --help</code></span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</body>
+</html>
