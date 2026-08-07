@@ -1,56 +1,67 @@
-# 📚 Apostilas
+# Apostilas & Vault de Estudos
 
 Vault de anotações de estudos organizado por área de conhecimento — graduação (FIAP), certificações e projetos pessoais.
 
-> Notas escritas no [Obsidian](https://obsidian.md/) com foco em backend, infraestrutura e arquitetura de software.
+---
+
+## Como Abrir e Visualizar o Vault
+
+Para ter a melhor experiência de leitura (incluindo renderização correta de links, canvas e arquivos HTML salvos no repositório), siga o tutorial abaixo.
+
+### 1. Instalar o Obsidian
+Baixe e instale a versão mais recente do Obsidian para o seu sistema operacional:
+- **[Download Obsidian](https://obsidian.md/download)**
 
 ---
 
-## 🗂️ Estrutura
-
-|Pasta|Descrição|
-|---|---|
-|[`Anotações/`](https://claude.ai/chat/Anota%C3%A7%C3%B5es)|Notas gerais, projetos pessoais (ESP32, VMs, eventos)|
-|[`FIAP/`](https://claude.ai/chat/FIAP)|Disciplinas, CPs, Sprints e projetos da graduação|
-|[`Terminal/`](https://claude.ai/chat/Terminal)|Docker, Git, Linux, Azure CLI, OCI CLI|
-
-### Terminal
-
-|Subpasta|Descrição|
-|---|---|
-|[`Terminal/Docker/`](https://claude.ai/chat/Terminal/Docker)|Referência de comandos Docker|
-|[`Terminal/Git/`](https://claude.ai/chat/Terminal/Git)|Referência de comandos Git|
-|[`Terminal/Linux/`](https://claude.ai/chat/Terminal/Linux)|Manipulação de arquivos, configuração do sistema|
-|[`Terminal/OCI & CLI/`](https://claude.ai/chat/Terminal/OCI%20&%20CLI)|Azure CLI e OCI CLI|
+### 2. Abrir o Repositório no Obsidian
+1. Abra o **Obsidian**.
+2. Na tela inicial, escolha a opção **"Open folder as vault"** (*Abrir pasta como cofre*).
+3. Selecione o diretório raiz deste repositório clonado no seu computador.
 
 ---
 
-## 📦 Estudos (submódulo)
+### 3. Configurar o Plugin para Arquivos HTML
 
-> Repositório externo vinculado como submódulo Git.
+Este repositório contém anotações e exportações em formato `.html`. O Obsidian não renderiza HTML nativamente como páginas interativas, portanto é necessário ativar o plugin **HTML Reader**.
 
-|Pasta|Descrição|
-|---|---|
-|[`Estudos/Arq. Software/`](https://claude.ai/chat/Estudos/Arq.%20Software)|Clean Architecture, DDD, padrões de projeto|
-|[`Estudos/DevOps/`](https://claude.ai/chat/Estudos/DevOps)|MOC, Fundamentos, CI/CD, IaC, Escalabilidade, Observabilidade|
-|[`Estudos/Especialista em Redes/`](https://claude.ai/chat/Estudos/Especialista%20em%20Redes)|Redes e protocolos|
-|[`Estudos/Gest. Pessoas/`](https://claude.ai/chat/Estudos/Gest.%20Pessoas)|Liderança, Agile, soft skills|
-|[`Estudos/Java/`](https://claude.ai/chat/Estudos/Java)|Linguagem Java e ecossistema|
-|[`Estudos/Projetos/`](https://claude.ai/chat/Estudos/Projetos)|Projetos práticos e mapas de estudo|
-|[`Estudos/SpringBoot/`](https://claude.ai/chat/Estudos/SpringBoot)|REST APIs, JPA, Spring Security, Docker, JWT|
+#### Opção A: Instalação Direta (URI)
+Com o Obsidian aberto no seu vault, clique no link abaixo para abrir diretamente a página de instalação do plugin:
+**[Instalar HTML Reader no Obsidian](obsidian://show-plugin?id=obsidian-html-plugin)**
 
----
-
-## 🚀 Stack principal
-
-![Java](https://img.shields.io/badge/Java-ED8B00?style=flat&logo=openjdk&logoColor=white) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat&logo=spring-boot&logoColor=white) ![Azure](https://img.shields.io/badge/Azure-0078D4?style=flat&logo=microsoft-azure&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+#### Opção B: Instalação Manual nas Configurações
+1. No Obsidian, vá em **Settings** (`Ctrl + ,` ou ícone de engrenagem).
+2. Na aba **Community plugins**, clique em **Turn on community plugins** se ainda não estiver ativado.
+3. Clique em **Browse** e pesquise por `HTML Reader`.
+4. Clique em **Install** e depois em **Enable**.
 
 ---
 
-## ✍️ Sobre
+## Estrutura do Vault
 
-Anotações pessoais de estudo — não são tutoriais nem documentação oficial. Podem conter erros ou estar incompletas. Use como referência por sua conta.
+| Pasta        | Descrição                                                          |
+| :----------- | :----------------------------------------------------------------- |
+| `Anotações/` | Notas gerais e projetos pessoais                                   |
+| `FIAP/`      | Disciplinas, CPs, Sprints e projetos da graduação                  |
+| `Terminal/`  | Comandos e guias práticos (Docker, Git, Linux, Azure CLI, OCI CLI) |
+| `Estudos/`   | Submódulo externo com tópicos aprofundados                         |
+
+### Módulo Terminal
+- `Terminal/Docker/`: Referência e cheatsheets de Docker
+- `Terminal/Git/`: Fluxos de trabalho e referência Git
+- `Terminal/Linux/`: Manipulação do SO, shell e automações
+- `Terminal/OCI & CLI/`: Azure CLI e OCI CLI
+
+### Submódulo Estudos
+- `Estudos/Arq. Software/`: Clean Architecture, DDD, Design Patterns
+- `Estudos/DevOps/`: CI/CD, IaC, Observabilidade, Escalabilidade
+- `Estudos/Especialista em Redes/`: Redes e protocolos
+- `Estudos/Gest. Pessoas/`: Liderança e metodologias ágeis
+- `Estudos/Java/`: Ecossistema Java
+- `Estudos/SpringBoot/`: REST APIs, Spring Security, JPA, JWT
 
 ---
 
-_Mantido por [@felipeflosi](https://github.com/felipeflosi)_
+## Sobre
+Anotações pessoais de estudo — não são tutoriais nem documentação oficial.  
+Mantido por **[@felipeflosi](https://github.com/felipeflosi)**.
