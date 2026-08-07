@@ -4,53 +4,24 @@
     "type": "split",
     "children": [
       {
-        "id": "48eaa7ec4bc17caf",
+        "id": "be0000f09d6cf139",
         "type": "tabs",
         "children": [
           {
-            "id": "c975d79de222c7e0",
+            "id": "17953daf1f7edd6f",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Estudos/DevOps/01-Fundamentos/01 - O que é DevOps.md",
+                "file": "Estudos/SpringBoot/12-Testes/44 - Testes de Integração Spring Boot Test.md",
                 "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "01 - O que é DevOps"
-            }
-          },
-          {
-            "id": "27fd1330705f9e4e",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "README.md",
-                "mode": "preview",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "README"
-            }
-          },
-          {
-            "id": "84f744583cb47c61",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Terminal/Linux/Linux_Arquivos_Pastas.md",
-                "mode": "preview",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Linux_Arquivos_Pastas"
+              "title": "44 - Testes de Integração Spring Boot Test"
             }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -70,7 +41,9 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": false
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-folder-closed",
               "title": "Explorador de arquivos"
@@ -107,7 +80,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 363.5
+    "width": 200
   },
   "right": {
     "id": "d44663c7f41d480d",
@@ -123,7 +96,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Estudos/DevOps/01-Fundamentos/01 - O que é DevOps.md",
+                "file": "FIAP/Estudos/QA_S2_01.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -133,7 +106,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Links inversos para 01 - O que é DevOps"
+              "title": "Links inversos"
             }
           },
           {
@@ -212,43 +185,43 @@
       "bases:Criar nova base": false
     }
   },
-  "active": "84f744583cb47c61",
+  "active": "17953daf1f7edd6f",
   "lastOpenFiles": [
-    "Terminal/Git/Linux_Git.md",
-    "texto.md",
-    "README.md",
-    "Estudos/DevOps/01-Fundamentos/01 - O que é DevOps.md",
-    "Estudos/DevOps/06-Observabilidade/10 - Observabilidade.md",
-    "Estudos/DevOps/05-Escalabilidade/09 - Resiliência.md",
-    "Estudos/DevOps/05-Escalabilidade/08 - Alta Disponibilidade.md",
-    "Estudos/DevOps/05-Escalabilidade/07 - Escalabilidade.md",
-    "Estudos/DevOps/04-IaC/06 - Infraestrutura como Código (IaC).md",
-    "Estudos/DevOps/03-Automacao/05 - Automação.md",
-    "Estudos/DevOps/02-CICD/04 - CD — Entrega e Deploy Contínuos.md",
-    "Estudos/DevOps/02-CICD/03 - CI — Integração Contínua.md",
-    "Estudos/DevOps/01-Fundamentos/11 - O Fluxo Completo DevOps.md",
-    "Estudos/DevOps/01-Fundamentos/02 - Cultura DevOps e CALMS.md",
-    "Estudos/DevOps/00-MOC/🗺️ MOC — DevOps.md",
-    "Estudos/DevOps.zip",
-    "Estudos/DevOps/Roadmap/🛣️ Roadmap DevOps.md",
+    "Estudos/SpringBoot/12-Testes/43 - Testes Unitários com JUnit e Mockito.md",
+    "FIAP/Estudos/QA_S2_01.md",
     "Terminal/Docker/Docker - Referência de Comandos.md",
-    "Anotações/vm-model-cli.md",
-    "Estudos/Projetos/00-Maps/🗺️ Mapa Principal.md",
-    "Terminal/Linux/Linux_Config_Sistema.md",
-    "Terminal/Linux/Linux_Arquivos_Pastas.md",
-    "FIAP/GS/TOGAF.md",
-    "Estudos/SpringBoot/10-Seguranca/35 - Introdução ao Spring Security.md",
-    "FIAP/GS",
-    "Anotações/Organização Festa Junina.md",
     "Terminal/OCI & CLI/Linux_Azure_CLI.md",
     "Terminal/OCI & CLI/Linux_OCI_CLI.md",
+    "Terminal/Linux/Linux_Config_Sistema.md",
+    "Terminal/Linux/Linux_Arquivos_Pastas.md",
+    "Terminal/Git/Linux_Git.md",
+    "Estudos/SpringBoot/04-Controllers/15 - Métodos HTTP GET POST PUT DELETE.md",
+    "Estudos/SpringBoot/12-Testes/44 - Testes de Integração Spring Boot Test.md",
+    "texto.md",
+    "README.md",
+    "FIAP/Estudos",
+    "Estudos/Projetos/01-Ideacao/01 - Capturar e Refinar a Ideia.md",
+    "Estudos/DevOps/02-CICD/03 - CI — Integração Contínua.md",
+    "Estudos/DevOps/01-Fundamentos/01 - O que é DevOps.md",
+    "Anotações/Organização Festa Junina.md",
+    "Anotações/ESP32 - Dual server.md",
+    "Estudos/SpringBoot/16-Extras/54 - Logs com SLF4J.md",
+    "Estudos/DevOps/06-Observabilidade/10 - Observabilidade.md",
+    "Estudos/DevOps/01-Fundamentos/02 - Cultura DevOps e CALMS.md",
+    "Estudos/DevOps/06-Observabilidade/11 - O Fluxo Completo DevOps.md",
+    "Estudos/DevOps/00-MOC/🗺️ MOC — DevOps.md",
+    "Estudos/DevOps/04-IaC/06 - Infraestrutura como Código (IaC).md",
+    "Estudos/DevOps/05-Escalabilidade/08 - Alta Disponibilidade.md",
+    "Estudos/DevOps/03-Automacao/05 - Automação.md",
+    "Estudos/DevOps/05-Escalabilidade/09 - Resiliência.md",
+    "Estudos/DevOps.zip",
+    "FIAP/GS",
     "Anotações",
     "Terminal/Git",
     "Terminal/Linux",
     "Terminal/Anotações",
     "Terminal/OCI & CLI",
     "Terminal/Docker",
-    "Linux/files",
-    "Linux/files.zip"
+    "Linux/files"
   ]
 }
