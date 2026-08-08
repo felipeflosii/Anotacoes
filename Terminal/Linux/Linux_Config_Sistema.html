@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux — Configuração do Sistema via Terminal</title>
+  <style>
+    :root {
+      --bg-main: #121212;
+      --bg-card: #1e1e24;
+      --bg-code: #0a0a0d;
+      --border-color: #27272a;
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --primary-blue: #38bdf8;
+      --primary-purple: #c084fc;
+      --accent-red: #f87171;
+      --accent-amber: #fbbf24;
+      --accent-green: #34d399;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2.5rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+    }
+
+    .header-title-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: 2.25rem;
+      margin: 0;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .header p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 750px;
+      margin: 0.5rem auto 0;
+    }
+
+    /* Sections */
+    .section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+    }
+
+    .section-title svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    /* Subsections */
+    .subsection {
+      margin-top: 1.5rem;
+    }
+
+    .subsection-title {
+      font-size: 1.1rem;
+      color: var(--primary-blue);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--primary-blue);
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    code {
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      background: var(--bg-code);
+      color: var(--primary-purple);
+      padding: 0.2rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      border: 1px solid rgba(192, 132, 252, 0.2);
+    }
+
+    /* Code Blocks */
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .code-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .code-block pre {
+      margin: 0;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      font-size: 0.9rem;
+      color: #e4e4e7;
+      line-height: 1.5;
+    }
+
+    .code-comment {
+      color: #71717a;
+    }
+
+    /* Info Box */
+    .info-box {
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-left: 4px solid var(--primary-blue);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .info-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .info-content p {
+      margin: 0;
+      color: var(--text-main);
+      font-size: 0.9rem;
+    }
+
+    /* References Grid */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      color: var(--text-main);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .link-card:hover {
+      border-color: var(--primary-blue);
+      transform: translateY(-2px);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .link-card svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .link-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .link-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .link-sub {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-title-container">
+        <svg class="header-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        <h1>Linux — Configuração do Sistema via Terminal</h1>
+      </div>
+      <p>
+        Comandos para configurar o sistema no Zorin OS (base Ubuntu / Debian).
+      </p>
+    </header>
+
+    <!-- Pacotes e Atualizações (APT) -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+        </svg>
+        Pacotes e Atualizações (APT)
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>apt / dpkg</span></div>
+        <pre>sudo apt update                            <span class="code-comment"># atualiza lista de pacotes</span>
+sudo apt upgrade                           <span class="code-comment"># atualiza pacotes instalados</span>
+sudo apt full-upgrade                      <span class="code-comment"># atualiza incluindo dependências</span>
+sudo apt install nome-pacote               <span class="code-comment"># instala pacote</span>
+sudo apt remove nome-pacote                <span class="code-comment"># remove (mantém configs)</span>
+sudo apt purge nome-pacote                 <span class="code-comment"># remove + configs</span>
+sudo apt autoremove                        <span class="code-comment"># remove dependências órfãs</span>
+sudo apt search termo                      <span class="code-comment"># busca pacote por nome/desc</span>
+apt list --installed                       <span class="code-comment"># lista instalados</span>
+dpkg -l | grep nome                        <span class="code-comment"># verifica se pacote está instalado</span></pre>
+      </div>
+    </section>
+
+    <!-- Áudio (PulseAudio / PipeWire) -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+        </svg>
+        Áudio (PulseAudio / PipeWire)
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>pactl / pulseaudio</span></div>
+        <pre><span class="code-comment"># Listar dispositivos de saída</span>
+pactl list sinks short
+
+<span class="code-comment"># Listar dispositivos de entrada</span>
+pactl list sources short
+
+<span class="code-comment"># Definir saída padrão</span>
+pactl set-default-sink &lt;nome-do-sink&gt;
+
+<span class="code-comment"># Definir entrada padrão</span>
+pactl set-default-source &lt;nome-do-source&gt;
+
+<span class="code-comment"># Volume da saída (0–150%)</span>
+pactl set-sink-volume @DEFAULT_SINK@ 80%
+pactl set-sink-volume @DEFAULT_SINK@ +10%    <span class="code-comment"># aumenta 10%</span>
+pactl set-sink-volume @DEFAULT_SINK@ -10%    <span class="code-comment"># diminui 10%</span>
+
+<span class="code-comment"># Mutar / desmutar saída</span>
+pactl set-sink-mute @DEFAULT_SINK@ toggle
+
+<span class="code-comment"># Reiniciar PulseAudio</span>
+pulseaudio --kill && pulseaudio --start</pre>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">Bluetooth — Perfis de Áudio</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Bluetooth Audio</span></div>
+          <pre><span class="code-comment"># Ver perfis disponíveis do fone</span>
+pactl list cards | grep -A 20 "bluez"
+
+<span class="code-comment"># Modo headset (entrada + saída — microfone ativo)</span>
+pactl set-card-profile bluez_card.&lt;MAC&gt; headset-head-unit
+
+<span class="code-comment"># Modo A2DP (somente saída — melhor qualidade de áudio)</span>
+pactl set-card-profile bluez_card.&lt;MAC&gt; a2dp-sink</pre>
+        </div>
+
+        <div class="info-box">
+          <svg class="info-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <div class="info-content">
+            <p>Substitua <code>&lt;MAC&gt;</code> pelo endereço do dispositivo com <code>_</code> no lugar de <code>:</code> (ex: <code>84_AC_60_D7_B7_A4</code>).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Monitor e Resolução -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+        </svg>
+        Monitor e Resolução (xrandr)
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>xrandr</span></div>
+        <pre>xrandr                                     <span class="code-comment"># lista monitores e resoluções disponíveis</span>
+xrandr --output HDMI-1 --mode 1920x1080    <span class="code-comment"># define resolução</span>
+xrandr --output HDMI-1 --rate 144          <span class="code-comment"># define taxa de atualização</span>
+xrandr --output HDMI-1 --off               <span class="code-comment"># desliga monitor</span>
+
+<span class="code-comment"># Dois monitores — lado a lado</span>
+xrandr --output eDP-1 --primary \
+       --output HDMI-1 --right-of eDP-1</pre>
+      </div>
+    </section>
+
+    <!-- Rede -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/>
+        </svg>
+        Rede
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>ip / nmcli / ss</span></div>
+        <pre>ip a                                       <span class="code-comment"># lista interfaces e IPs</span>
+ip link show                               <span class="code-comment"># estado das interfaces</span>
+nmcli device status                        <span class="code-comment"># status de rede (NetworkManager)</span>
+nmcli connection show                      <span class="code-comment"># lista conexões salvas</span>
+nmcli connection up "nome-wifi"            <span class="code-comment"># conecta a uma rede</span>
+nmcli connection down "nome-wifi"          <span class="code-comment"># desconecta</span>
+
+ping -c 4 google.com                       <span class="code-comment"># testa conectividade</span>
+curl ifconfig.me                           <span class="code-comment"># exibe IP público</span>
+ss -tulpn                                  <span class="code-comment"># portas em uso</span></pre>
+      </div>
+    </section>
+
+    <!-- Firewall (UFW) -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+        </svg>
+        Firewall (UFW)
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>ufw</span></div>
+        <pre>sudo ufw status                            <span class="code-comment"># estado atual</span>
+sudo ufw enable                            <span class="code-comment"># ativa firewall</span>
+sudo ufw disable                           <span class="code-comment"># desativa</span>
+
+sudo ufw allow 22                          <span class="code-comment"># libera SSH</span>
+sudo ufw allow 8080/tcp                    <span class="code-comment"># libera porta TCP</span>
+sudo ufw deny 3306                         <span class="code-comment"># bloqueia porta</span>
+sudo ufw delete allow 8080/tcp             <span class="code-comment"># remove regra</span>
+sudo ufw reset                             <span class="code-comment"># reseta todas as regras</span></pre>
+      </div>
+    </section>
+
+    <!-- Energia e Hardware -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        Energia e Hardware
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>Info do Sistema & Bateria</span></div>
+        <pre><span class="code-comment"># Informações do sistema</span>
+uname -a                                   <span class="code-comment"># kernel e arquitetura</span>
+lsb_release -a                             <span class="code-comment"># versão do SO</span>
+hostnamectl                                <span class="code-comment"># hostname e info do sistema</span>
+lscpu                                      <span class="code-comment"># detalhes do processador</span>
+free -h                                    <span class="code-comment"># memória RAM</span>
+df -h                                      <span class="code-comment"># uso de disco</span>
+lsblk                                      <span class="code-comment"># dispositivos de bloco</span>
+lsusb                                      <span class="code-comment"># dispositivos USB</span>
+lspci                                      <span class="code-comment"># dispositivos PCI</span>
+
+<span class="code-comment"># Bateria / energia</span>
+upower -i /org/freedesktop/UPower/devices/battery_BAT0
+cat /sys/class/power_supply/BAT0/capacity  <span class="code-comment"># porcentagem da bateria</span>
+
+<span class="code-comment"># Temperatura</span>
+sensors                                    <span class="code-comment"># requer lm-sensors</span>
+sudo apt install lm-sensors && sudo sensors-detect</pre>
+      </div>
+    </section>
+
+    <!-- Usuários e Grupos -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+        </svg>
+        Usuários e Grupos
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>Gestão de Usuários</span></div>
+        <pre>whoami                                     <span class="code-comment"># usuário atual</span>
+id                                         <span class="code-comment"># UID, GID e grupos</span>
+groups                                     <span class="code-comment"># grupos do usuário atual</span>
+sudo adduser novo-usuario                  <span class="code-comment"># cria usuário</span>
+sudo usermod -aG sudo novo-usuario         <span class="code-comment"># adiciona ao grupo sudo</span>
+sudo deluser nome-usuario                  <span class="code-comment"># remove usuário</span>
+passwd                                     <span class="code-comment"># muda senha do usuário atual</span>
+sudo passwd nome-usuario                   <span class="code-comment"># muda senha de outro usuário</span></pre>
+      </div>
+    </section>
+
+    <!-- Serviços (systemd) -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+        Serviços (systemd)
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>systemctl / journalctl</span></div>
+        <pre>systemctl status nome-servico              <span class="code-comment"># estado do serviço</span>
+systemctl start nome-servico               <span class="code-comment"># inicia</span>
+systemctl stop nome-servico                <span class="code-comment"># para</span>
+systemctl restart nome-servico             <span class="code-comment"># reinicia</span>
+systemctl enable nome-servico              <span class="code-comment"># habilita na inicialização</span>
+systemctl disable nome-servico             <span class="code-comment"># desabilita na inicialização</span>
+systemctl list-units --type=service        <span class="code-comment"># lista todos os serviços</span>
+journalctl -u nome-servico -f              <span class="code-comment"># logs em tempo real</span></pre>
+      </div>
+    </section>
+
+    <!-- Docker (pós-instalação) -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        Docker (Pós-instalação)
+      </h2>
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>docker setup</span></div>
+        <pre><span class="code-comment"># Adicionar usuário ao grupo docker (evita sudo)</span>
+sudo usermod -aG docker $USER
+newgrp docker                              <span class="code-comment"># aplica sem reiniciar</span>
+
+<span class="code-comment"># Testar</span>
+docker run hello-world</pre>
+      </div>
+    </section>
+
+    <!-- Atalhos Úteis -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        Atalhos Úteis
+      </h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Comando</th>
+              <th>Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>sudo !!</code></td><td>Repete o último comando executado com privilégios de sudo</td></tr>
+            <tr><td><code>history | grep apt</code></td><td>Busca histórico de comandos executados que contenham "apt"</td></tr>
+            <tr><td><code>alias ll='ls -lh'</code></td><td>Cria um atalho personalizado no terminal</td></tr>
+            <tr><td><code>echo $SHELL</code></td><td>Exibe o shell atual em execução (ex: <code>/bin/bash</code>)</td></tr>
+            <tr><td><code>htop</code></td><td>Monitor de processos interativo do sistema</td></tr>
+            <tr><td><code>ncdu</code></td><td>Analisador interativo de uso de espaço em disco</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Documentação e Referências -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+        </svg>
+        Documentação e Referência
+      </h2>
+      <div class="links-grid">
+        <a href="https://help.ubuntu.com/community/UsingTheTerminal" target="_blank" class="link-card">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+          <div class="link-info">
+            <span class="link-title">Ubuntu Terminal Documentation</span>
+            <span class="link-sub">help.ubuntu.com</span>
+          </div>
+        </a>
+        <a href="https://zorin.com/help/" target="_blank" class="link-card">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          <div class="link-info">
+            <span class="link-title">Zorin OS Help & Documentation</span>
+            <span class="link-sub">zorin.com/help</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+</body>
+</html>
