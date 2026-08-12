@@ -521,24 +521,24 @@ docker login moneyhubrm(seu-rm).azurecr.io -u $ADMIN_USERNAME -p $ADMIN_PASSWORD
         <div class="code-block">
           <div class="code-header"><span>bash</span><span>Docker Push</span></div>
           <pre><span class="code-comment"># 1. MySQL</span>
-docker tag mysql-dimdim moneyhubrm(seu-rm).azurecr.io/mysql-dimdim:latest
-docker push moneyhubrm(seu-rm).azurecr.io/mysql-dimdim:latest
+docker tag mysql-dimdim moneyhubrm(seu-rm).azurecr.io/mysql-dimdim:v1
+docker push moneyhubrm(seu-rm).azurecr.io/mysql-dimdim:v1
 
 <span class="code-comment"># 2. API Java</span>
-docker tag api-dimdim moneyhubrm(seu-rm).azurecr.io/api-dimdim:latest
-docker push moneyhubrm(seu-rm).azurecr.io/api-dimdim:latest
+docker tag api-dimdim moneyhubrm(seu-rm).azurecr.io/api-dimdim:v1
+docker push moneyhubrm(seu-rm).azurecr.io/api-dimdim:v1
 
 <span class="code-comment"># 3. API .NET</span>
-docker tag api-transacoes moneyhubrm(seu-rm).azurecr.io/api-transacoes:latest
-docker push moneyhubrm(seu-rm).azurecr.io/api-transacoes:latest
+docker tag api-transacoes moneyhubrm(seu-rm).azurecr.io/api-transacoes:v1
+docker push moneyhubrm(seu-rm).azurecr.io/api-transacoes:v1
 
 <span class="code-comment"># Confirmar os repositórios criados no ACR</span>
 az acr repository list --name moneyhubrm(seu-rm) --output table
 
 <span class="code-comment"># Limpeza opcional das imagens locais etiquetadas</span>
-docker rmi moneyhubrm(seu-rm).azurecr.io/api-transacoes:latest
-docker rmi moneyhubrm(seu-rm).azurecr.io/api-dimdim:latest
-docker rmi moneyhubrm(seu-rm).azurecr.io/mysql-dimdim:latest</pre>
+docker rmi moneyhubrm(seu-rm).azurecr.io/api-transacoes:v1
+docker rmi moneyhubrm(seu-rm).azurecr.io/api-dimdim:v1
+docker rmi moneyhubrm(seu-rm).azurecr.io/mysql-dimdim:v1</pre>
         </div>
       </div>
     </section>
