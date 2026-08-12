@@ -466,7 +466,7 @@ az provider register --namespace Microsoft.ContainerRegistry</pre>
           <div class="code-header"><span>bash</span><span>Create ACR</span></div>
           <pre>az acr create \
   --resource-group rg-money-hub \
-  --name moneyhubrm563197 \
+  --name moneyhubrm(seu-rm) \
   --sku Standard \
   --location southafricanorth \
   --public-network-enabled true \
@@ -497,18 +497,18 @@ az provider register --namespace Microsoft.ContainerRegistry</pre>
         <div class="code-block">
           <div class="code-header"><span>bash</span><span>ACR Credentials</span></div>
           <pre><span class="code-comment"># Obter servidor de login</span>
-LOGIN_SERVER=$(az acr show --name moneyhubrm563197 --resource-group rg-money-hub --query loginServer --output tsv)
+LOGIN_SERVER=$(az acr show --name moneyhubrm(seu-rm) --resource-group rg-money-hub --query loginServer --output tsv)
 echo "Login Server: $LOGIN_SERVER"
 
 <span class="code-comment"># Obter usuário e senha do Admin</span>
-ADMIN_USERNAME=$(az acr credential show --name moneyhubrm563197 --resource-group rg-money-hub --query username --output tsv)
-ADMIN_PASSWORD=$(az acr credential show --name moneyhubrm563197 --resource-group rg-money-hub --query passwords[0].value --output tsv)
+ADMIN_USERNAME=$(az acr credential show --name moneyhubrm(seu-rm) --resource-group rg-money-hub --query username --output tsv)
+ADMIN_PASSWORD=$(az acr credential show --name moneyhubrm(seu-rm) --resource-group rg-money-hub --query passwords[0].value --output tsv)
 
 <span class="code-comment"># Autenticação A: via Azure CLI</span>
-az acr login --name moneyhubrm563197
+az acr login --name moneyhubrm(seu-rm)
 
 <span class="code-comment"># Autenticação B: via Docker Login com credenciais</span>
-docker login moneyhubrm563197.azurecr.io -u $ADMIN_USERNAME -p $ADMIN_PASSWORD</pre>
+docker login moneyhubrm(seu-rm).azurecr.io -u $ADMIN_USERNAME -p $ADMIN_PASSWORD</pre>
         </div>
       </div>
 
@@ -522,24 +522,24 @@ docker login moneyhubrm563197.azurecr.io -u $ADMIN_USERNAME -p $ADMIN_PASSWORD</
         <div class="code-block">
           <div class="code-header"><span>bash</span><span>Docker Push</span></div>
           <pre><span class="code-comment"># 1. MySQL</span>
-docker tag mysql-dimdim moneyhubrm563197.azurecr.io/mysql-dimdim:latest
-docker push moneyhubrm563197.azurecr.io/mysql-dimdim:latest
+docker tag mysql-dimdim moneyhubrm(seu-rm).azurecr.io/mysql-dimdim:latest
+docker push moneyhubrm(seu-rm).azurecr.io/mysql-dimdim:latest
 
 <span class="code-comment"># 2. API Java</span>
-docker tag api-dimdim moneyhubrm563197.azurecr.io/api-dimdim:latest
-docker push moneyhubrm563197.azurecr.io/api-dimdim:latest
+docker tag api-dimdim moneyhubrm(seu-rm).azurecr.io/api-dimdim:latest
+docker push moneyhubrm(seu-rm).azurecr.io/api-dimdim:latest
 
 <span class="code-comment"># 3. API .NET</span>
-docker tag api-transacoes moneyhubrm563197.azurecr.io/api-transacoes:latest
-docker push moneyhubrm563197.azurecr.io/api-transacoes:latest
+docker tag api-transacoes moneyhubrm(seu-rm).azurecr.io/api-transacoes:latest
+docker push moneyhubrm(seu-rm).azurecr.io/api-transacoes:latest
 
 <span class="code-comment"># Confirmar os repositórios criados no ACR</span>
-az acr repository list --name moneyhubrm563197 --output table
+az acr repository list --name moneyhubrm(seu-rm) --output table
 
 <span class="code-comment"># Limpeza opcional das imagens locais etiquetadas</span>
-docker rmi moneyhubrm563197.azurecr.io/api-transacoes:latest
-docker rmi moneyhubrm563197.azurecr.io/api-dimdim:latest
-docker rmi moneyhubrm563197.azurecr.io/mysql-dimdim:latest</pre>
+docker rmi moneyhubrm(seu-rm).azurecr.io/api-transacoes:latest
+docker rmi moneyhubrm(seu-rm).azurecr.io/api-dimdim:latest
+docker rmi moneyhubrm(seu-rm).azurecr.io/mysql-dimdim:latest</pre>
         </div>
       </div>
     </section>
@@ -567,7 +567,7 @@ docker rmi moneyhubrm563197.azurecr.io/mysql-dimdim:latest</pre>
       <div class="code-block">
         <div class="code-header"><span>bash</span><span>ACR Task Create</span></div>
         <pre>az acr task create \
-  --registry moneyhubrm563197 \
+  --registry moneyhubrm(seu-rm) \
   --name buildMySQL \
   --image mysql-dimdim:{{.Run.ID}} \
   --context https://github.com/SEU-USUARIO/mysql-dimdim-2.git#main \
@@ -579,16 +579,16 @@ docker rmi moneyhubrm563197.azurecr.io/mysql-dimdim:latest</pre>
       <div class="code-block">
         <div class="code-header"><span>bash</span><span>ACR Management Commands</span></div>
         <pre><span class="code-comment"># Listar tags de um repositório</span>
-az acr repository show-tags --name moneyhubrm563197 --repository mysql-dimdim
+az acr repository show-tags --name moneyhubrm(seu-rm) --repository mysql-dimdim
 
 <span class="code-comment"># Exibir manifesto técnico de uma imagem</span>
-az acr manifest list-metadata --registry moneyhubrm563197 --name api-dimdim
+az acr manifest list-metadata --registry moneyhubrm(seu-rm) --name api-dimdim
 
 <span class="code-comment"># Remover imagens sem tag com mais de 7 dias</span>
-az acr purge --name moneyhubrm563197 --filter "imagem:.*" --ago 7d --untagged
+az acr purge --name moneyhubrm(seu-rm) --filter "imagem:.*" --ago 7d --untagged
 
 <span class="code-comment"># Excluir a tarefa automatizada</span>
-az acr task delete --name buildMySQL --registry moneyhubrm563197 --yes</pre>
+az acr task delete --name buildMySQL --registry moneyhubrm(seu-rm) --yes</pre>
       </div>
     </section>
 
@@ -599,6 +599,35 @@ az acr task delete --name buildMySQL --registry moneyhubrm563197 --yes</pre>
         </svg>
         5. Publicação no Azure Container Instances (ACI)
       </h2>
+
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+          </svg>
+          5.0 Configuração dos Scripts (RM e Location)
+        </h3>
+        <p>
+          Todos os 5 scripts abaixo vêm com os valores de exemplo <code>rm=rm9999</code> (e, nos dois primeiros, <code>location="eastus"</code>).
+          Em vez de abrir cada arquivo no <code>nano</code> e editar manualmente, rode o bloco abaixo uma única vez no mesmo diretório dos scripts:
+          ele usa <code>sed -i</code> para substituir esses valores diretamente nos 5 arquivos.
+        </p>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Editar RM e Location nos Scripts</span></div>
+          <pre><span class="code-comment"># 1. Defina o seu RM (mantendo o prefixo "rm") e a location desejada</span>
+MEU_RM="rm(seu-rm)"       <span class="code-comment"># Exemplo: rm550000</span>
+MINHA_LOCATION="eastus"   <span class="code-comment"># Altere se for usar outra region</span>
+
+<span class="code-comment"># 2. Substitui automaticamente rm=rm9999 e location="eastus" nos 5 scripts</span>
+for script in 01_store-account.sh 02_key-vault.sh 03_aci-mysql.sh 04_aci-api-java.sh 05_aci-api-dotnet.sh; do
+  sed -i "s/rm=rm9999/rm=$MEU_RM/" "$script"
+  sed -i "s/location=\"eastus\"/location=\"$MINHA_LOCATION\"/" "$script"
+done
+
+<span class="code-comment"># 3. Confirma que a troca foi aplicada em todos os arquivos</span>
+grep -H "^rm=" 01_store-account.sh 02_key-vault.sh 03_aci-mysql.sh 04_aci-api-java.sh 05_aci-api-dotnet.sh</pre>
+        </div>
+      </div>
 
       <div class="subsection">
         <h3 class="subsection-title">
