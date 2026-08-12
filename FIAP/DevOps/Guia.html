@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Azure Container Instances (ACI) e Azure Container Registry (ACR)</title>
+  <style>
+    :root {
+      --bg-main: #121212;
+      --bg-card: #1e1e24;
+      --bg-code: #0a0a0d;
+      --border-color: #27272a;
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --primary-blue: #38bdf8;
+      --primary-purple: #c084fc;
+      --accent-red: #f87171;
+      --accent-amber: #fbbf24;
+      --accent-green: #34d399;
+      --accent-cyan: #22d3ee;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 2rem 1rem;
+    }
+
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2.5rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+    }
+
+    .header h1 {
+      font-size: 2.25rem;
+      margin: 0;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .header-subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 780px;
+      margin: 0.5rem auto 0;
+    }
+
+    .section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 2px solid var(--primary-blue);
+      padding-bottom: 0.75rem;
+    }
+
+    .section-title svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .subsection { margin-top: 1.5rem; }
+
+    .subsection-title {
+      font-size: 1.15rem;
+      color: var(--primary-blue);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .subsection-title svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    pre {
+      margin: 0;
+      color: var(--text-main);
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+
+    .code-comment { color: var(--text-muted); }
+
+    .callout {
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .callout svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .callout-title { font-weight: 700; margin-bottom: 0.25rem; font-size: 0.95rem; }
+    .callout p { margin: 0; font-size: 0.9rem; color: var(--text-main); }
+
+    .callout-info {
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-left: 4px solid var(--primary-blue);
+    }
+
+    .callout-info svg, .callout-info .callout-title {
+      color: var(--primary-blue);
+    }
+
+    .callout-warning {
+      background: rgba(251, 191, 36, 0.08);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-left: 4px solid var(--accent-amber);
+    }
+
+    .callout-warning svg, .callout-warning .callout-title {
+      color: var(--accent-amber);
+    }
+
+    .callout-danger {
+      background: rgba(248, 113, 113, 0.08);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      border-left: 4px solid var(--accent-red);
+    }
+
+    .callout-danger svg, .callout-danger .callout-title {
+      color: var(--accent-red);
+    }
+
+    .callout-tip {
+      background: rgba(52, 211, 153, 0.08);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      border-left: 4px solid var(--accent-green);
+    }
+
+    .callout-tip svg, .callout-tip .callout-title {
+      color: var(--accent-green);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    th {
+      background: var(--bg-main);
+      font-weight: 600;
+      color: var(--primary-blue);
+    }
+
+    code {
+      background: var(--bg-main);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      color: var(--accent-cyan);
+    }
+
+    .flow-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .flow-step {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--primary-blue);
+      padding: 1rem;
+      border-radius: 6px;
+    }
+
+    .flow-cmd {
+      display: block;
+      font-weight: 600;
+      color: var(--primary-blue);
+      margin-bottom: 0.25rem;
+    }
+
+    .flow-desc {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .flow-badge {
+      display: inline-block;
+      background: var(--primary-blue);
+      color: var(--bg-main);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header class="header">
+      <h1>Azure Container Instances (ACI) e Container Registry (ACR)</h1>
+      <p class="header-subtitle">
+        Guia passo a passo explicado para implantar, gerenciar e executar aplicações containerizadas na nuvem Azure.
+      </p>
+    </header>
+
+    <div class="callout callout-info">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <div>
+        <div class="callout-title">Sobre este material</div>
+        <p>Este documento reorganiza o conteúdo em formato de guia estruturado, detalhando a finalidade e a execução de cada comando do Azure CLI e do Docker.</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        Cenário Prático - Arquitetura da Aplicação
+      </h2>
+      <p>O sistema do projeto é composto por 3 microsserviços containerizados de forma independente:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Serviço</th>
+            <th>Tecnologia</th>
+            <th>Função</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>mysql-dimdim</code></td><td>MySQL 8.0</td><td>Banco de dados relacional para armazenamento de transações</td></tr>
+          <tr><td><code>api-dimdim</code></td><td>Java / Spring Boot</td><td>API REST principal de comunicação com o banco de dados</td></tr>
+          <tr><td><code>api-transacoes</code></td><td>.NET 8.0</td><td>API REST secundária para processamento de transações</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-tip">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 01-2 2h-0a2 2 0 01-2-2v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+        </svg>
+        <div>
+          <div class="callout-title">Objetivo do Exercício</div>
+          <p>Migrar os containers que rodavam localmente em docker-compose para uma infraestrutura Serverless pública na nuvem Azure, acessível via IP público ou FQDN.</p>
+        </div>
+      </div>
+
+      <div class="flow-container">
+        <div class="flow-step">
+          <span class="flow-cmd">1. Seu Computador / VM</span>
+          <span class="flow-desc">Build das imagens Docker a partir do código-fonte</span>
+          <span class="flow-badge">docker build</span>
+        </div>
+        <div class="flow-step">
+          <span class="flow-cmd">2. Imagem Local com Tag</span>
+          <span class="flow-desc">Etiquetamento com a URL do servidor do ACR</span>
+          <span class="flow-badge">docker tag</span>
+        </div>
+        <div class="flow-step">
+          <span class="flow-cmd">3. Azure Container Registry (ACR)</span>
+          <span class="flow-desc">Armazenamento privado e criptografado da imagem</span>
+          <span class="flow-badge">docker push</span>
+        </div>
+        <div class="flow-step">
+          <span class="flow-cmd">4. Azure Container Instances (ACI)</span>
+          <span class="flow-desc">Execução 24/7 Serverless com IP público ou FQDN</span>
+          <span class="flow-badge">az container create</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        1. Clonando e Construindo as Imagens
+      </h2>
+
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+          </svg>
+          1.1 Clonando os Repositórios do GitHub
+        </h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Git Clone</span></div>
+          <pre><span class="code-comment"># Confirmar diretório HOME atual</span>
+pwd
+
+<span class="code-comment"># Clonar os 3 serviços</span>
+git clone https://github.com/profjoaomenk/mysql-dimdim-2.git
+git clone https://github.com/profjoaomenk/transacoes-api-2.git
+git clone https://github.com/profjoaomenk/ApiTransacoes-2.git</pre>
+        </div>
+      </div>
+
+      <div class="callout callout-warning">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <div>
+          <div class="callout-title">Importante: Fork do MySQL</div>
+          <p>Realize um Fork do repositório mysql-dimdim-2 para a sua conta pessoal no GitHub antes de clonar. O repositório bifurcado será necessário para autenticação do ACR Tasks posteriormente.</p>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+          </svg>
+          1.2 Executando o Build das Imagens
+        </h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Docker Build</span></div>
+          <pre><span class="code-comment"># 1. Banco de Dados (MySQL)</span>
+cd mysql-dimdim-2
+docker build -f Dockerfile.mysql -t mysql-dimdim .
+
+<span class="code-comment"># 2. API Java</span>
+cd ../transacoes-api-2
+docker build -f Dockerfile.api -t api-dimdim .
+
+<span class="code-comment"># 3. API .NET</span>
+cd ../ApiTransacoes-2
+docker build -f docker/Dockerfile -t api-transacoes .
+
+<span class="code-comment"># Verificar imagens criadas localmente</span>
+docker image ls</pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        2. Mapeamento de Serviços na Nuvem
+      </h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Ferramenta Azure</th>
+            <th>Função na Arquitetura</th>
+            <th>Equivalente Local</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>Máquina Virtual Linux</code></td><td>Ambiente de execução de comandos da CLI e Docker</td><td>Sua estação de trabalho / Laptop</td></tr>
+          <tr><td><code>Azure Container Registry (ACR)</code></td><td>Repositório privado para imagens Docker criptografadas</td><td>Docker Hub Privado</td></tr>
+          <tr><td><code>Azure Storage Account (File Share)</code></td><td>Armazenamento de arquivos persistente para dados do banco</td><td>Volume Docker (docker volume)</td></tr>
+          <tr><td><code>Azure Key Vault</code></td><td>Cofre seguro para armazenamento de senhas e credenciais</td><td>Arquivo .env / Variáveis locais</td></tr>
+          <tr><td><code>Azure Container Instances (ACI)</code></td><td>Execução serverless de containers sob demanda</td><td>docker run / docker-compose</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+        </svg>
+        3. Configurando o Azure Container Registry (ACR)
+      </h2>
+
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+          3.1 Autenticação e Grupo de Recursos
+        </h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Azure CLI Setup</span></div>
+          <pre><span class="code-comment"># Login na conta Azure</span>
+az login
+
+<span class="code-comment"># Verificar a assinatura ativa</span>
+az account show
+
+<span class="code-comment"># Trocar assinatura ativa (se necessário)</span>
+az account list -o table
+az account set --subscription "nome-ou-id-da-assinatura"
+
+<span class="code-comment"># Criar Grupo de Recursos</span>
+az group create -l southafricanorth -n rg-money-hub
+
+<span class="code-comment"># Registrar o provedor do Container Registry (executar uma única vez)</span>
+az provider register --namespace Microsoft.ContainerRegistry</pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+          </svg>
+          3.2 Provisionamento do ACR
+        </h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Create ACR</span></div>
+          <pre>az acr create \
+  --resource-group rg-money-hub \
+  --name moneyhubrm563197 \
+  --sku Standard \
+  --location southafricanorth \
+  --public-network-enabled true \
+  --admin-enabled true</pre>
+        </div>
+
+        <table>
+          <thead>
+            <tr><th>Parâmetro</th><th>Finalidade</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>--resource-group</code></td><td>Especifica o Grupo de Recursos onde o ACR será alocado</td></tr>
+            <tr><td><code>--name</code></td><td>Nome globalmente único do registro (formato: nome.azurecr.io)</td></tr>
+            <tr><td><code>--sku</code></td><td>Nível de serviço e recursos (Basic, Standard, Premium)</td></tr>
+            <tr><td><code>--public-network-enabled</code></td><td>Habilita acesso público via internet</td></tr>
+            <tr><td><code>--admin-enabled</code></td><td>Ativa credenciais de usuário/senha administrador para autenticação simples</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+          </svg>
+          3.3 Extração de Credenciais e Login no ACR
+        </h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>ACR Credentials</span></div>
+          <pre><span class="code-comment"># Obter servidor de login</span>
+LOGIN_SERVER=$(az acr show --name moneyhubrm563197 --resource-group rg-money-hub --query loginServer --output tsv)
+echo "Login Server: $LOGIN_SERVER"
+
+<span class="code-comment"># Obter usuário e senha do Admin</span>
+ADMIN_USERNAME=$(az acr credential show --name moneyhubrm563197 --resource-group rg-money-hub --query username --output tsv)
+ADMIN_PASSWORD=$(az acr credential show --name moneyhubrm563197 --resource-group rg-money-hub --query passwords[0].value --output tsv)
+
+<span class="code-comment"># Autenticação A: via Azure CLI</span>
+az acr login --name moneyhubrm563197
+
+<span class="code-comment"># Autenticação B: via Docker Login com credenciais</span>
+docker login moneyhubrm563197.azurecr.io -u $ADMIN_USERNAME -p $ADMIN_PASSWORD</pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3v-6"/>
+          </svg>
+          3.4 Tagging e Push das Imagens
+        </h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Docker Push</span></div>
+          <pre><span class="code-comment"># 1. MySQL</span>
+docker tag mysql-dimdim moneyhubrm563197.azurecr.io/mysql-dimdim:latest
+docker push moneyhubrm563197.azurecr.io/mysql-dimdim:latest
+
+<span class="code-comment"># 2. API Java</span>
+docker tag api-dimdim moneyhubrm563197.azurecr.io/api-dimdim:latest
+docker push moneyhubrm563197.azurecr.io/api-dimdim:latest
+
+<span class="code-comment"># 3. API .NET</span>
+docker tag api-transacoes moneyhubrm563197.azurecr.io/api-transacoes:latest
+docker push moneyhubrm563197.azurecr.io/api-transacoes:latest
+
+<span class="code-comment"># Confirmar os repositórios criados no ACR</span>
+az acr repository list --name moneyhubrm563197 --output table
+
+<span class="code-comment"># Limpeza opcional das imagens locais etiquetadas</span>
+docker rmi moneyhubrm563197.azurecr.io/api-transacoes:latest
+docker rmi moneyhubrm563197.azurecr.io/api-dimdim:latest
+docker rmi moneyhubrm563197.azurecr.io/mysql-dimdim:latest</pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+        4. Automação de Builds com ACR Tasks
+      </h2>
+      <p>Permite compilar e publicar automaticamente uma nova versão da imagem no ACR a cada novo commit realizado na branch principal do GitHub.</p>
+
+      <div class="callout callout-warning">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <div>
+          <div class="callout-title">Observação Importante</div>
+          <p>ACR Tasks pode estar bloqueado ou indisponível em sua assinatura de ensino. Se o comando falhar com TasksOperationNotAllowed, use GitHub Actions como alternativa de automação.</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>ACR Task Create</span></div>
+        <pre>az acr task create \
+  --registry moneyhubrm563197 \
+  --name buildMySQL \
+  --image mysql-dimdim:{{.Run.ID}} \
+  --context https://github.com/SEU-USUARIO/mysql-dimdim-2.git#main \
+  --file Dockerfile.mysql \
+  --git-access-token SEU_TOKEN_DO_GITHUB \
+  --commit-trigger-enabled true</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>ACR Management Commands</span></div>
+        <pre><span class="code-comment"># Listar tags de um repositório</span>
+az acr repository show-tags --name moneyhubrm563197 --repository mysql-dimdim
+
+<span class="code-comment"># Exibir manifesto técnico de uma imagem</span>
+az acr manifest list-metadata --registry moneyhubrm563197 --name api-dimdim
+
+<span class="code-comment"># Remover imagens sem tag com mais de 7 dias</span>
+az acr purge --name moneyhubrm563197 --filter "imagem:.*" --ago 7d --untagged
+
+<span class="code-comment"># Excluir a tarefa automatizada</span>
+az acr task delete --name buildMySQL --registry moneyhubrm563197 --yes</pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 001-9.9 5 5 0 00-9.7-1.7A4 4 0 003 15z"/>
+        </svg>
+        5. Publicação no Azure Container Instances (ACI)
+      </h2>
+
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          5.1 Infraestrutura de Apoio (Storage & Key Vault)
+        </h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Provisioning Scripts</span></div>
+          <pre><span class="code-comment"># 1. Provisionar Conta de Armazenamento para persistência MySQL</span>
+chmod +x 01_store-account.sh
+./01_store-account.sh > 01_store-account.log
+
+<span class="code-comment"># 2. Provisionar Key Vault para senhas e variáveis</span>
+chmod +x 02_key-vault.sh
+./02_key-vault.sh > 02_key-vault.log</pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+          </svg>
+          5.2 Implantação das Instâncias de Container
+        </h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Deploy Containers</span></div>
+          <pre><span class="code-comment"># Subir container do MySQL</span>
+chmod +x 03_aci-mysql.sh
+./03_aci-mysql.sh > 03_aci-mysql.log
+
+<span class="code-comment"># Subir container da API Java</span>
+chmod +x 04_aci-api-java.sh
+./04_aci-api-java.sh > 04_aci-api-java.log
+
+<span class="code-comment"># Subir container da API .NET</span>
+chmod +x 05_aci-api-dotnet.sh
+./05_aci-api-dotnet.sh > 05_aci-api-dotnet.log</pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+          </svg>
+          5.3 Inspeção e Conexão Interativa
+        </h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>ACI Inspection</span></div>
+          <pre><span class="code-comment"># Listar todos os containers</span>
+az container list --resource-group rg-money-hub --output table
+
+<span class="code-comment"># Logs de execução do container do MySQL</span>
+az container logs --resource-group rg-money-hub --name mysql-dimdim
+
+<span class="code-comment"># Conectar via cliente MySQL interno</span>
+az container exec --resource-group rg-money-hub --name mysql-dimdim \
+  --exec-command "mysql -uuser-dimdim -psenha-dimdim"
+
+<span class="code-comment"># Obter FQDN público do container .NET</span>
+fqdndotnet=$(az container show --resource-group rg-money-hub --name api-dotnet \
+  --query ipAddress.fqdn --output tsv)
+
+<span class="code-comment"># Obter IP público do container Java</span>
+ipjava=$(az container show --resource-group rg-money-hub --name api-java \
+  --query ipAddress.ip --output tsv)</pre>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        6. Homologação das APIs e Validação CRUD
+      </h2>
+
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>HTTP Requests - CRUD Completo</span></div>
+        <pre><span class="code-comment"># 1. Listar todas as transações (READ)</span>
+curl -X GET http://localhost:8080/api/transacoes
+
+<span class="code-comment"># 2. Criar nova transação (CREATE)</span>
+curl -X POST http://localhost:8080/api/transacoes \
+  -H "Content-Type: application/json" \
+  -d '{"descricao": "Compra no supermercado", "valor": 150.75}'
+
+<span class="code-comment"># 3. Atualizar transação (UPDATE via API .NET)</span>
+curl -X PUT http://$fqdndotnet:8080/api/transacoes/7 \
+  -H "Content-Type: application/json" \
+  -d '{"id": 7, "descricao": "Compra no supermercado - ALTERADO", "valor": 150.76, "dataTransacao": "2024-06-18T00:00:00"}'
+
+<span class="code-comment"># 4. Remover transação (DELETE)</span>
+curl -X DELETE http://localhost:8080/api/transacoes/8
+
+<span class="code-comment"># 5. Verificar resultado final</span>
+curl -X GET http://$fqdndotnet:8080/api/transacoes</pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        7. Limpeza de Recursos
+      </h2>
+
+      <div class="callout callout-danger">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div>
+          <div class="callout-title">Importante: Desalocação de Recursos</div>
+          <p>Para interromper cobranças contínuas, exclua o Grupo de Recursos ao final dos testes:</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>Cleanup</span></div>
+        <pre><span class="code-comment"># Remover TUDO (Grupo, Containers, Storage, Key Vault)</span>
+az group delete --name rg-money-hub --yes --no-wait
+
+<span class="code-comment"># Verificar que foi deletado (pode levar minutos)</span>
+az group list -o table</pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        Glossário de Termos Técnicos
+      </h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Termo</th>
+            <th>Definição</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>CLI / az</code></td><td>Interface de Linha de Comando oficial para gerenciamento da nuvem Azure</td></tr>
+          <tr><td><code>Docker Engine</code></td><td>Serviço em segundo plano (daemon) responsável por construir e executar containers</td></tr>
+          <tr><td><code>Dockerfile</code></td><td>Arquivo de instrução declarativo utilizado para construir uma imagem de container</td></tr>
+          <tr><td><code>Image / Imagem</code></td><td>Template estático somente-leitura contendo código, bibliotecas e dependências</td></tr>
+          <tr><td><code>Container</code></td><td>Instância isolada em tempo de execução criada a partir de uma imagem</td></tr>
+          <tr><td><code>Push / Pull</code></td><td>Operações de upload (enviar) e download (baixar) de imagens em um registro</td></tr>
+          <tr><td><code>Resource Group</code></td><td>Contêiner lógico de gerenciamento de ciclo de vida e permissões dos recursos Azure</td></tr>
+          <tr><td><code>Key Vault</code></td><td>Serviço de gerenciamento de chaves, segredos e certificados com criptografia HSM</td></tr>
+          <tr><td><code>chmod +x</code></td><td>Comando do Linux que atribui permissão de execução a um arquivo de script</td></tr>
+          <tr><td><code>FQDN</code></td><td>Fully Qualified Domain Name - nome de domínio completo para acesso público</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </div>
+
+</body>
+</html>
