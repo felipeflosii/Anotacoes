@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Azure SQL Database (DBaaS) — Provisionamento e Integração Backend</title>
+  <style>
+    :root {
+      --bg-main: #121212;
+      --bg-card: #1e1e24;
+      --bg-code: #0a0a0d;
+      --border-color: #27272a;
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --primary-blue: #38bdf8;
+      --primary-purple: #c084fc;
+      --accent-red: #f87171;
+      --accent-amber: #fbbf24;
+      --accent-green: #34d399;
+      --accent-cyan: #22d3ee;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2.5rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+    }
+
+    .header-title-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: 2.25rem;
+      margin: 0;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .header-subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 780px;
+      margin: 0.5rem auto 0;
+    }
+
+    /* Sections */
+    .section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 2px solid var(--primary-blue);
+      padding-bottom: 0.75rem;
+    }
+
+    .section-title svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    /* Subsections */
+    .subsection {
+      margin-top: 1.5rem;
+    }
+
+    .subsection-title {
+      font-size: 1.15rem;
+      color: var(--primary-blue);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .subsection-title svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+
+    /* Callout Boxes */
+    .callout {
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .callout svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .callout p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    .callout-info {
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-left: 4px solid var(--primary-blue);
+    }
+
+    .callout-info svg, .callout-info .callout-title {
+      color: var(--primary-blue);
+    }
+
+    .callout-warning {
+      background: rgba(251, 191, 36, 0.08);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-left: 4px solid var(--accent-amber);
+    }
+
+    .callout-warning svg, .callout-warning .callout-title {
+      color: var(--accent-amber);
+    }
+
+    .callout-danger {
+      background: rgba(248, 113, 113, 0.08);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      border-left: 4px solid var(--accent-red);
+    }
+
+    .callout-danger svg, .callout-danger .callout-title {
+      color: var(--accent-red);
+    }
+
+    .callout-tip {
+      background: rgba(52, 211, 153, 0.08);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      border-left: 4px solid var(--accent-green);
+    }
+
+    .callout-tip svg, .callout-tip .callout-title {
+      color: var(--accent-green);
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin-top: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--primary-blue);
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    code {
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      background: var(--bg-code);
+      color: var(--primary-purple);
+      padding: 0.2rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      border: 1px solid rgba(192, 132, 252, 0.2);
+    }
+
+    /* Code Blocks */
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .code-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .code-block pre {
+      margin: 0;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      font-size: 0.9rem;
+      color: #e4e4e7;
+      line-height: 1.5;
+    }
+
+    .code-comment {
+      color: #71717a;
+    }
+
+    /* References Grid */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      color: var(--text-main);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .link-card:hover {
+      border-color: var(--primary-blue);
+      transform: translateY(-2px);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .link-card svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .link-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .link-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .link-sub {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-title-container">
+        <svg class="header-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+        </svg>
+        <h1>Azure SQL Database (DBaaS)</h1>
+      </div>
+      <p class="header-subtitle">
+        Guia prático de provisionamento via Azure CLI, políticas de firewall e conectividade com Spring Boot 3 e FastAPI.
+      </p>
+    </header>
+
+    <!-- Conceito DBaaS -->
+    <div class="callout callout-info">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <div>
+        <div class="callout-title">Conceito de DBaaS</div>
+        <p>Database as a Service (DBaaS) abstrai a infraestrutura hospedeira. Diferente de gerenciar um PostgreSQL ou SQL Server em uma máquina virtual (IaaS), no DBaaS o provedor administra sistema operacional, replicação, backups automáticos e patches de segurança. A responsabilidade técnica se concentra na modelagem do database, índices e na estruturação lógica do backend.</p>
+      </div>
+    </div>
+
+    <!-- 1. Criação do Azure SQL Database -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        1. Criação do Azure SQL Database
+      </h2>
+      <p>
+        O provisionamento no Azure exige a criação prévia de um servidor lógico (um container de administração para múltiplos bancos) antes de instanciar o database. A camada recomendada para a maioria das REST APIs modernas é a <code>vCore Serverless</code>, pois escala computação dinamicamente e pode pausar em ociosidade, minimizando custos. A alternativa legada, <code>DTU</code>, provisiona pacotes fixos de recursos.
+      </p>
+
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>Azure CLI — Provisionamento</span></div>
+        <pre><span class="code-comment"># 1. Criar o Resource Group</span>
+az group create \
+  --name rg-backend-db \
+  --location eastus
+
+<span class="code-comment"># 2. Criar o Servidor Lógico SQL</span>
+az sql server create \
+  --name server-sql-dev \
+  --resource-group rg-backend-db \
+  --location eastus \
+  --admin-user "dbadmin" \
+  --admin-password "S3nh@F0rt3!"
+
+<span class="code-comment"># 3. Criar o Database na camada Serverless (vCore)</span>
+az sql db create \
+  --resource-group rg-backend-db \
+  --server server-sql-dev \
+  --name db_production \
+  --edition GeneralPurpose \
+  --compute-model Serverless \
+  --family Gen5 \
+  --capacity 2 \
+  --min-capacity 0.5 \
+  --auto-pause-delay 60</pre>
+      </div>
+    </section>
+
+    <!-- 2. Configuração de Rede e Conectividade -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+        2. Configuração de Rede e Conectividade
+      </h2>
+      <p>
+        Por segurança, o Azure SQL rejeita requisições externas por padrão. É necessário configurar regras de firewall baseadas em IP para liberar o tráfego do seu ambiente Linux local ou habilitar a flag <code>AllowAllWindowsAzureIps</code> para permitir que aplicações dentro do Azure (como Vercel via integrações ou App Services) acessem o endpoint.
+      </p>
+
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>Azure CLI — Regras de Firewall</span></div>
+        <pre><span class="code-comment"># Obter o IP público da sua máquina (requer curl)</span>
+MEU_IP=$(curl -s ifconfig.me)
+
+<span class="code-comment"># Liberar acesso para o seu IP local</span>
+az sql server firewall-rule create \
+  --resource-group rg-backend-db \
+  --server server-sql-dev \
+  --name AllowLocalIP \
+  --start-ip-address $MEU_IP \
+  --end-ip-address $MEU_IP
+
+<span class="code-comment"># Habilitar acesso de outros serviços internos do Azure (opcional)</span>
+az sql server firewall-rule create \
+  --resource-group rg-backend-db \
+  --server server-sql-dev \
+  --name AllowAzureServices \
+  --start-ip-address 0.0.0.0 \
+  --end-ip-address 0.0.0.0</pre>
+      </div>
+    </section>
+
+    <!-- 3. Integração com Backend -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+        </svg>
+        3. Integração com Backend
+      </h2>
+      <p>
+        A <code>connection string</code> do Azure SQL utiliza a porta padrão <code>1433</code> e exige conexão via TLS (<code>Encrypt=True</code>). Seguem exemplos de integração considerando padrões de Clean Architecture com frameworks distintos.
+      </p>
+
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          Spring Boot 3 + Java 21
+        </h3>
+        <p>Configuração do <code>application.yml</code> no pacote de infraestrutura para acesso via Spring Data JPA.</p>
+        <div class="code-block">
+          <div class="code-header"><span>yaml</span><span>application.yml</span></div>
+          <pre>spring:
+  datasource:
+    url: jdbc:sqlserver://server-sql-dev.database.windows.net:1433;database=db_production;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
+    username: dbadmin
+    password: S3nh@F0rt3!
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLServerDialect</pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+          </svg>
+          FastAPI + Python
+        </h3>
+        <p>String de conexão otimizada para SQLAlchemy ou SQLModel via driver <code>pyodbc</code>.</p>
+        <div class="code-block">
+          <div class="code-header"><span>python</span><span>database.py</span></div>
+          <pre>import urllib.parse
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+server = 'server-sql-dev.database.windows.net'
+database = 'db_production'
+username = 'dbadmin'
+password = 'S3nh@F0rt3!'
+driver = '{ODBC Driver 18 for SQL Server}'
+
+params = urllib.parse.quote_plus(
+    f'Driver={driver};Server=tcp:{server},1433;Database={database};Uid={username};Pwd={password};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;'
+)
+
+SQLALCHEMY_DATABASE_URL = f"mssql+pyodbc:///?odbc_connect={params}"
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Limpeza de Recursos -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        4. Limpeza de Recursos
+      </h2>
+
+      <div class="callout callout-danger">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div>
+          <div class="callout-title">Desalocação</div>
+          <p>Após testes e implementações de desenvolvimento, exclua o Resource Group para evitar cobranças remanescentes de armazenamento, mesmo na camada Serverless.</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>Azure CLI — Cleanup</span></div>
+        <pre><span class="code-comment"># Remove o servidor lógico, database e regras de firewall em cascata</span>
+az group delete --name rg-backend-db --yes --no-wait</pre>
+      </div>
+    </section>
+
+    <!-- Glossário Técnico -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        Glossário Técnico
+      </h2>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Termo</th>
+              <th>Definição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code>PaaS</code></td><td>Platform as a Service. Modelo focado na entrega da plataforma de execução (como o DBaaS), isentando o desenvolvedor da gerência do S.O.</td></tr>
+            <tr><td><code>vCore Serverless</code></td><td>Tier computacional do Azure SQL que aloca CPU sob demanda e pausa instâncias inativas automaticamente.</td></tr>
+            <tr><td><code>Logical Server</code></td><td>No Azure SQL, é o invólucro de gestão que unifica bases de dados e regras de segurança (Firewall, Defender) sob o mesmo FQDN.</td></tr>
+            <tr><td><code>Connection String</code></td><td>String estruturada contendo endpoint, porta, driver e credenciais enviada no payload de inicialização do ORM.</td></tr>
+            <tr><td><code>pyodbc</code></td><td>Driver nativo recomendado para integrar aplicações Python (FastAPI/SQLAlchemy) aos bancos de dados SQL Server via protocolo ODBC.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Documentação Oficial -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+        </svg>
+        Documentação e Referência
+      </h2>
+      <div class="links-grid">
+        <a href="https://learn.microsoft.com/pt-br/azure/azure-sql/database/" target="_blank" class="link-card">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+          <div class="link-info">
+            <span class="link-title">Documentação Oficial Azure SQL</span>
+            <span class="link-sub">learn.microsoft.com/azure/azure-sql</span>
+          </div>
+        </a>
+        <a href="https://learn.microsoft.com/pt-br/sql/connect/python/pyodbc/step-3-proof-of-concept-connecting-to-sql-using-pyodbc" target="_blank" class="link-card">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          <div class="link-info">
+            <span class="link-title">Conexão Python via pyodbc</span>
+            <span class="link-sub">learn.microsoft.com/sql/connect/python</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+</body>
+</html>

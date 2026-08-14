@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modelos de Serviço em Nuvem</title>
+  <style>
+    :root {
+      --bg-main: #121212;
+      --bg-card: #1e1e24;
+      --bg-code: #0a0a0d;
+      --border-color: #27272a;
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --primary-blue: #38bdf8;
+      --primary-purple: #c084fc;
+      --accent-red: #f87171;
+      --accent-amber: #fbbf24;
+      --accent-green: #34d399;
+      --accent-cyan: #22d3ee;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 2rem 1rem;
+    }
+
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2.5rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+    }
+
+    .header h1 {
+      font-size: 2.25rem;
+      margin: 0;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .header-subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 780px;
+      margin: 0.5rem auto 0;
+    }
+
+    .section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 2px solid var(--primary-blue);
+      padding-bottom: 0.75rem;
+    }
+
+    .section-title svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    pre {
+      margin: 0;
+      color: var(--text-main);
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+
+    .code-comment { color: var(--text-muted); }
+
+    .callout {
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .callout svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .callout-title { font-weight: 700; margin-bottom: 0.25rem; font-size: 0.95rem; }
+    .callout p { margin: 0; font-size: 0.9rem; color: var(--text-main); }
+
+    .callout-info {
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-left: 4px solid var(--primary-blue);
+    }
+
+    .callout-info svg, .callout-info .callout-title {
+      color: var(--primary-blue);
+    }
+
+    .callout-tip {
+      background: rgba(52, 211, 153, 0.08);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      border-left: 4px solid var(--accent-green);
+    }
+
+    .callout-tip svg, .callout-tip .callout-title {
+      color: var(--accent-green);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    th {
+      background: var(--bg-main);
+      font-weight: 600;
+      color: var(--primary-blue);
+    }
+
+    .badge-managed {
+      color: var(--accent-green);
+      font-weight: bold;
+    }
+
+    .badge-user {
+      color: var(--accent-red);
+      font-weight: bold;
+    }
+
+    code {
+      background: var(--bg-main);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      color: var(--accent-cyan);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header class="header">
+      <h1>Cloud Service Models</h1>
+      <p class="header-subtitle">
+        Entendendo as camadas de abstração em nuvem: IaaS, PaaS, DBaaS, SaaS e Serverless.
+      </p>
+    </header>
+
+    <div class="callout callout-info">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <div>
+        <div class="callout-title">O Paradigma da Abstração</div>
+        <p>A computação em nuvem opera na transferência de responsabilidade. Quanto maior o nível do serviço, menos controle direto você tem sobre o sistema operacional e infraestrutura física, permitindo foco exclusivo no desenvolvimento do código e modelagem de negócios.</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+        </svg>
+        1. IaaS (Infrastructure as a Service)
+      </h2>
+      <p>
+        No modelo IaaS, o provedor entrega os blocos de construção fundamentais: instâncias de computação brutas, redes virtuais e volumes de armazenamento. A abstração ocorre apenas no hardware físico (hypervisor). Você é integralmente responsável por provisionar, configurar e aplicar patches no sistema operacional, além de instalar middlewares e gerenciar o runtime.
+      </p>
+      <p>
+        Este modelo é ideal quando o projeto exige acesso root/admin para rodar softwares legados ou tunning agressivo no kernel do SO.
+      </p>
+
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>IaaS - Provisionamento de Máquina Virtual</span></div>
+        <pre><span class="code-comment"># Criando um ambiente Linux cru (IaaS). </span>
+<span class="code-comment"># A partir deste ponto, o SSH, firewall interno e runtimes (Bun, Java, Python) são sua responsabilidade.</span>
+az vm create   --resource-group rg-infra   --name linux-dev-env   --image UbuntuLTS   --admin-username adminuser   --generate-ssh-keys</pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+        </svg>
+        2. PaaS (Platform as a Service)
+      </h2>
+      <p>
+        O PaaS eleva a abstração escondendo o sistema operacional e o middleware. O ambiente de execução (runtime) é pré-configurado pelo provedor. O objetivo é receber o seu código-fonte, construir os artefatos e expor a aplicação através de um endpoint seguro. Rotinas de balanceamento de carga e auto-scaling são configurações declarativas, não operacionais.
+      </p>
+      <p>
+        Plataformas como Vercel atuam como um PaaS altamente especializado em frontend, gerenciando o deploy de projetos React/Vite de forma transparente diretamente do repositório Git, distribuindo os assets na edge network.
+      </p>
+
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>PaaS - Deploy de Código</span></div>
+        <pre><span class="code-comment"># O provedor cuida da infraestrutura subjacente.</span>
+<span class="code-comment"># O foco é puramente entregar o artefato da aplicação.</span>
+vercel --prod
+
+<span class="code-comment"># Ou no contexto Azure (App Service para Spring Boot / FastAPI):</span>
+az webapp up   --resource-group rg-backend   --name api-service-prod   --runtime "JAVA|21-java21"</pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/>
+        </svg>
+        3. DBaaS (Database as a Service)
+      </h2>
+      <p>
+        Subcategoria do PaaS estritamente focada em persistência de dados. Em vez de subir uma instância Linux (IaaS) e instalar manualmente um PostgreSQL, o provedor oferece o motor do banco de dados pronto para uso. O Data Plane (arquivos de log, buffer pool, processos em background) e o Control Plane (backups PITR, failover, replicação síncrona) são opacos para o desenvolvedor. A interface de interação restringe-se à connection string e DDL/DML.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        4. Modelos Adicionais: FaaS e SaaS
+      </h2>
+      
+      <p><strong>FaaS (Function as a Service) / Serverless:</strong> Uma granularidade ainda maior que o PaaS. Em vez de hospedar uma aplicação inteira aguardando requisições, você implanta blocos de código (funções) vinculados a eventos (triggers). A computação só existe durante a execução do código (milissegundos) e escala de zero a milhares de instâncias instantaneamente. Ex: AWS Lambda, Azure Functions.</p>
+
+      <p><strong>SaaS (Software as a Service):</strong> O nível mais alto de abstração. O provedor gerencia toda a pilha de tecnologia, e você consome o software final como usuário ou administrador lógico. Você não altera o código-fonte nem gerencia a infraestrutura. Ex: GitHub, Gmail, Office 365.</p>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        Matriz de Responsabilidade Compartilhada
+      </h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Camada do Stack</th>
+            <th>On-Premise</th>
+            <th>IaaS (ex: Linux VM)</th>
+            <th>PaaS / DBaaS (ex: Vercel / Azure SQL)</th>
+            <th>SaaS (ex: GitHub)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Aplicações / Regras de Negócio</td>
+            <td class="badge-user">Você</td>
+            <td class="badge-user">Você</td>
+            <td class="badge-user">Você</td>
+            <td class="badge-managed">Provedor</td>
+          </tr>
+          <tr>
+            <td>Dados / Modelagem</td>
+            <td class="badge-user">Você</td>
+            <td class="badge-user">Você</td>
+            <td class="badge-user">Você</td>
+            <td class="badge-managed">Provedor</td>
+          </tr>
+          <tr>
+            <td>Runtime / Middleware</td>
+            <td class="badge-user">Você</td>
+            <td class="badge-user">Você</td>
+            <td class="badge-managed">Provedor</td>
+            <td class="badge-managed">Provedor</td>
+          </tr>
+          <tr>
+            <td>Sistema Operacional (OS)</td>
+            <td class="badge-user">Você</td>
+            <td class="badge-user">Você</td>
+            <td class="badge-managed">Provedor</td>
+            <td class="badge-managed">Provedor</td>
+          </tr>
+          <tr>
+            <td>Virtualização</td>
+            <td class="badge-user">Você</td>
+            <td class="badge-managed">Provedor</td>
+            <td class="badge-managed">Provedor</td>
+            <td class="badge-managed">Provedor</td>
+          </tr>
+          <tr>
+            <td>Hardware / Rede Física</td>
+            <td class="badge-user">Você</td>
+            <td class="badge-managed">Provedor</td>
+            <td class="badge-managed">Provedor</td>
+            <td class="badge-managed">Provedor</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </div>
+
+</body>
+</html>
