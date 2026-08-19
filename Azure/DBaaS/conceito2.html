@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Azure SQL Database (PaaS) — Banco de Dados SQL em Nuvem, Replicação e Failover</title>
+  <style>
+    :root {
+      --bg-main: #121212;
+      --bg-card: #1e1e24;
+      --bg-code: #0a0a0d;
+      --border-color: #27272a;
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --primary-blue: #38bdf8;
+      --primary-purple: #c084fc;
+      --accent-red: #f87171;
+      --accent-amber: #fbbf24;
+      --accent-green: #34d399;
+      --accent-cyan: #22d3ee;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 2.5rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+    }
+
+    .header-title-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: 2.25rem;
+      margin: 0;
+      background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .header-subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 780px;
+      margin: 0.5rem auto 0;
+    }
+
+    /* Sections */
+    .section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 1.25rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 2px solid var(--primary-blue);
+      padding-bottom: 0.75rem;
+    }
+
+    .section-title svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    /* Subsections */
+    .subsection {
+      margin-top: 1.5rem;
+    }
+
+    .subsection-title {
+      font-size: 1.15rem;
+      color: var(--primary-blue);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .subsection-title svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+
+    /* Callout Boxes */
+    .callout {
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .callout svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .callout p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    .callout-info {
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-left: 4px solid var(--primary-blue);
+    }
+
+    .callout-info svg, .callout-info .callout-title {
+      color: var(--primary-blue);
+    }
+
+    .callout-warning {
+      background: rgba(251, 191, 36, 0.08);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      border-left: 4px solid var(--accent-amber);
+    }
+
+    .callout-warning svg, .callout-warning .callout-title {
+      color: var(--accent-amber);
+    }
+
+    .callout-danger {
+      background: rgba(248, 113, 113, 0.08);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      border-left: 4px solid var(--accent-red);
+    }
+
+    .callout-danger svg, .callout-danger .callout-title {
+      color: var(--accent-red);
+    }
+
+    .callout-tip {
+      background: rgba(52, 211, 153, 0.08);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      border-left: 4px solid var(--accent-green);
+    }
+
+    .callout-tip svg, .callout-tip .callout-title {
+      color: var(--accent-green);
+    }
+
+    /* Vertical Flow Components */
+    .flow-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin: 1.25rem 0;
+    }
+
+    .flow-step {
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--primary-purple);
+      border-radius: 8px;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .flow-cmd {
+      font-family: monospace;
+      color: var(--primary-purple);
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    .flow-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .flow-badge {
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--primary-blue);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .flow-arrow {
+      display: flex;
+      justify-content: center;
+      color: var(--primary-blue);
+      margin: -0.1rem 0;
+    }
+
+    .flow-arrow svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin-top: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: rgba(255, 255, 255, 0.03);
+      color: var(--primary-blue);
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    code {
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      background: var(--bg-code);
+      color: var(--primary-purple);
+      padding: 0.2rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      border: 1px solid rgba(192, 132, 252, 0.2);
+    }
+
+    /* Code Blocks */
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .code-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 0.5rem 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-family: monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .code-block pre {
+      margin: 0;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-family: 'Fira Code', Consolas, Monaco, monospace;
+      font-size: 0.9rem;
+      color: #e4e4e7;
+      line-height: 1.5;
+    }
+
+    .code-comment {
+      color: #71717a;
+    }
+
+    /* Cards Grid */
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .card-item {
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1.1rem;
+    }
+
+    .card-item h4 {
+      margin: 0 0 0.4rem 0;
+      color: var(--primary-blue);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-item p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    /* References Grid */
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      background: var(--bg-code);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      color: var(--text-main);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .link-card:hover {
+      border-color: var(--primary-blue);
+      transform: translateY(-2px);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .link-card svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: var(--primary-blue);
+      flex-shrink: 0;
+    }
+
+    .link-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .link-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .link-sub {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-title-container">
+        <svg class="header-icon" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+        </svg>
+        <h1>Azure SQL Database (PaaS)</h1>
+      </div>
+      <p class="header-subtitle">
+        Guia prático de provisionamento via Azure CLI, replicação geográfica, failover automático, retenção de backups e conexões externas.
+      </p>
+    </header>
+
+    <!-- Contexto e Visão Geral -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        O que é o Azure SQL Database?
+      </h2>
+      <p>
+        O <strong>Azure SQL Database</strong> é um banco de dados relacional totalmente gerenciado (PaaS) baseado na engine do Microsoft SQL Server e otimizado para a nuvem. Ele elimina a necessidade de gerenciar hardware físico, sistemas operacionais, aplicação de patches e manutenções manuais.
+      </p>
+
+      <div class="grid-cards">
+        <div class="card-item">
+          <h4>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+            Alta Disponibilidade (99,99%)
+          </h4>
+          <p>Garantia de SLA corporativo com replicação interna de nós e failover automatizado sem intervenção humana.</p>
+        </div>
+        <div class="card-item">
+          <h4>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            Backup e PITR Automático
+          </h4>
+          <p>Backups completos, diferenciais e de log contínuos, com suporte a recuperação point-in-time e retenção de longo prazo.</p>
+        </div>
+        <div class="card-item">
+          <h4>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            Escalabilidade Elástica
+          </h4>
+          <p>Ajuste dinâmico de computação e armazenamento sem downtime para atender picos sazonais de tráfego.</p>
+        </div>
+        <div class="card-item">
+          <h4>
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            Segurança em Camadas
+          </h4>
+          <p>Firewall por IP, regras de rede virtual, criptografia transparente de dados (TDE) e integração com Microsoft Defender.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparação de Serviços e Modelos -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        Modelos de Implantação do SQL no Azure
+      </h2>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Modelo</th>
+              <th>Categoria</th>
+              <th>Caso de Uso Recomendado</th>
+              <th>Nível de Administração</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>SQL Server on Azure VM</code></td>
+              <td>IaaS (Virtual Machines)</td>
+              <td>Migrações lift-and-shift diretas que exigem acesso total ao sistema operacional e configurações de baixo nível.</td>
+              <td>Alto (Gerenciado pelo cliente)</td>
+            </tr>
+            <tr>
+              <td><code>Azure SQL Managed Instance</code></td>
+              <td>PaaS (Quase 100% compatível)</td>
+              <td>Modernização de aplicações existentes com suporte a SQL Agent, CLR, Cross-database queries e Linked Servers.</td>
+              <td>Médio (Sem SO, mas com gestão de instância)</td>
+            </tr>
+            <tr>
+              <td><code>Azure SQL Database (Single / Elastic)</code></td>
+              <td>PaaS (Banco de Dados Isolado)</td>
+              <td>Novas aplicações em nuvem, microserviços e bancos desacoplados com escalabilidade sob demanda e baixo custo.</td>
+              <td>Mínimo (Totalmente gerenciado)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout-info">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <div>
+          <div class="callout-title">SQL Database Server vs SQL Database</div>
+          <p>O <strong>SQL Database Server</strong> atua como ponto administrativo central (control plane lógico) para hospedar múltiplos bancos isolados. Ele gerencia logins, credenciais de administrador, regras de firewall, auditoria e grupos de failover. O <strong>SQL Database</strong> é o data plane individual onde residem as tabelas, índices e dados gravados.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modelos de Compra: DTU vs vCore -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+        </svg>
+        Modelos de Compra: DTU vs vCore
+      </h2>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>Modelo DTU (Database Transaction Unit)</th>
+              <th>Modelo vCore (Virtual Core)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Conceito</strong></td>
+              <td>Métrica combinada e empacotada de CPU, Memória RAM e taxa de E/S de disco (I/O).</td>
+              <td>Alocação transparente de núcleos virtuais de CPU dedicados, memória RAM e storage independente.</td>
+            </tr>
+            <tr>
+              <td><strong>Camadas de Serviço</strong></td>
+              <td>Basic (5 DTUs), Standard (10–3000 DTUs), Premium (125–4000 DTUs).</td>
+              <td>General Purpose, Business Critical, Hyperscale (até 100 TB) e Serverless.</td>
+            </tr>
+            <tr>
+              <td><strong>Indicação</strong></td>
+              <td>Aplicações com cargas de trabalho simples, orçamentos fixos e requisitos previsíveis.</td>
+              <td>Aplicações corporativas que exigem flexibilidade, alta concorrência e controle granular.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Arquitetura de Alta Disponibilidade -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"/>
+        </svg>
+        Arquitetura de Replicação e Failover Geográfico
+      </h2>
+      <p>
+        Para garantir tolerância a desastres e continuidade de negócio, o banco de dados primário é replicado assincronamente para uma região secundária emparelhada, configurando um <strong>Failover Group</strong> com chaveamento transparente de DNS.
+      </p>
+
+      <div class="flow-container">
+        <div class="flow-step">
+          <span class="flow-cmd">1. Servidor SQL Primário (East US 2)</span>
+          <span class="flow-desc">Hospeda a réplica primária de leitura e escrita (Read-Write Database)</span>
+          <span class="flow-badge">Primário</span>
+        </div>
+        <div class="flow-arrow">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+        </div>
+        <div class="flow-step">
+          <span class="flow-cmd">2. Replicação Geográfica Assíncrona</span>
+          <span class="flow-desc">Sincronização contínua de transações com redundância local de storage</span>
+          <span class="flow-badge">Geo-Replication</span>
+        </div>
+        <div class="flow-arrow">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+        </div>
+        <div class="flow-step">
+          <span class="flow-cmd">3. Servidor SQL Secundário (West US 2)</span>
+          <span class="flow-desc">Hospeda a réplica somente-leitura pronta para assumir a operação</span>
+          <span class="flow-badge">Secundário</span>
+        </div>
+        <div class="flow-arrow">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+        </div>
+        <div class="flow-step">
+          <span class="flow-cmd">4. Grupo de Failover (Failover Group)</span>
+          <span class="flow-desc">Gerencia o roteamento automático de tráfego em caso de indisponibilidade regional</span>
+          <span class="flow-badge">DNS Roteado</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Passo a Passo: Provisionamento via Azure CLI -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        Passo a Passo: Provisionamento e Configuração
+      </h2>
+
+      <div class="subsection">
+        <h3 class="subsection-title">1. Provedor de Recursos e Grupo de Recursos</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Azure CLI — Setup Inicial</span></div>
+          <pre><span class="code-comment"># Registrar o provedor SQL na assinatura (executar uma única vez)</span>
+az provider register --namespace Microsoft.Sql
+
+<span class="code-comment"># Criar o Grupo de Recursos na região East US 2</span>
+az group create --name rg-sql-dimdim --location eastus2</pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">2. Servidor Lógico SQL Primário</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Azure CLI — Servidor Primário</span></div>
+          <pre>az sql server create \
+  --name sql-server-dimdim-rm9999-eastus2 \
+  --resource-group rg-sql-dimdim \
+  --location eastus2 \
+  --admin-user user-dimdim \
+  --admin-password 'Fiap@2tdsvms' \
+  --enable-public-network true</pre>
+        </div>
+
+        <div class="callout callout-warning">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+          <div>
+            <div class="callout-title">Requisitos de Complexidade da Senha</div>
+            <p>A senha do administrador deve ter entre 8 e 128 caracteres, conter caracteres de pelo menos 3 categorias (maiúsculas, minúsculas, números e símbolos) e não pode conter partes do nome do usuário.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">3. Criação do Banco de Dados SQL</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Azure CLI — Database Creation</span></div>
+          <pre>az sql db create \
+  --resource-group rg-sql-dimdim \
+  --server sql-server-dimdim-rm9999-eastus2 \
+  --name db-dimdim \
+  --service-objective Basic \
+  --backup-storage-redundancy Local \
+  --zone-redundant false</pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">4. Regra de Firewall do Servidor</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Azure CLI — Firewall Rule</span></div>
+          <pre><span class="code-comment"># Liberar acesso para conexões externas (Ambiente de Desenvolvimento)</span>
+az sql server firewall-rule create \
+  --resource-group rg-sql-dimdim \
+  --server sql-server-dimdim-rm9999-eastus2 \
+  --name liberaGeral \
+  --start-ip-address 0.0.0.0 \
+  --end-ip-address 255.255.255.255</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Criação de Tabelas e Carga de Dados -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+        </svg>
+        Criação de Tabelas e Inserção de Dados (DML / DDL)
+      </h2>
+      <p>
+        Execução do script T-SQL via PowerShell no Cloud Shell utilizando o comando <code>Invoke-Sqlcmd</code> para criar a estrutura da tabela <code>transacoes</code> e realizar a carga inicial.
+      </p>
+
+      <div class="code-block">
+        <div class="code-header"><span>powershell</span><span>PowerShell Cloud Shell — Invoke-Sqlcmd</span></div>
+        <pre>Invoke-Sqlcmd -ServerInstance "sql-server-dimdim-rm9999-eastus2.database.windows.net" `
+  -Database "db-dimdim" `
+  -Username "user-dimdim" `
+  -Password "Fiap@2tdsvms" `
+  -Query @"
+IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='transacoes' AND xtype='U')
+BEGIN
+    CREATE TABLE transacoes (
+        id INT IDENTITY(1,1) PRIMARY KEY,
+        descricao VARCHAR(255) NOT NULL,
+        valor DECIMAL(10,2),
+        data_transacao DATETIME DEFAULT (SYSDATETIMEOFFSET() AT TIME ZONE 'E. South America Standard Time')
+    );
+END;
+
+INSERT INTO transacoes (descricao, valor, data_transacao) VALUES
+('Depósito bancário', 1500.00, '2025-06-01 10:00:00'),
+('Transferência PIX', -250.00, '2025-06-03 14:30:00'),
+('Pagamento de conta', -180.50, '2025-06-05 09:15:00'),
+('Saque em caixa eletrônico', -300.00, '2025-06-07 16:45:00'),
+('Investimento em poupança', -500.00, '2025-06-10 11:20:00');
+"@</pre>
+      </div>
+    </section>
+
+    <!-- Ativando a Replicação Geográfica -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+        </svg>
+        Replicação Geográfica (Geo-Replication)
+      </h2>
+
+      <div class="subsection">
+        <h3 class="subsection-title">1. Criar Servidor Secundário (West US 2)</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Azure CLI — Servidor Secundário</span></div>
+          <pre>az sql server create \
+  --name sql-server-dimdim-rm9999-westus2 \
+  --resource-group rg-sql-dimdim \
+  --location westus2 \
+  --admin-user user-dimdim \
+  --admin-password 'Fiap@2tdsvms' \
+  --enable-public-network true</pre>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">2. Criar a Réplica do Banco de Dados</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Azure CLI — Réplica Secundária</span></div>
+          <pre>az sql db replica create \
+  --name db-dimdim \
+  --resource-group rg-sql-dimdim \
+  --server sql-server-dimdim-rm9999-eastus2 \
+  --partner-server sql-server-dimdim-rm9999-westus2 \
+  --partner-resource-group rg-sql-dimdim \
+  --backup-storage-redundancy Local \
+  --zone-redundant false</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Configuração de Backups e Políticas LTR -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        Políticas de Retenção de Backup a Longo Prazo (LTR)
+      </h2>
+      <p>
+        Por padrão, o Azure SQL mantém backups automáticos diários com retenção de 7 dias (PITR). A política LTR (Long-Term Retention) estende a retenção para atender a requisitos regulatórios e de compliance.
+      </p>
+
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>Azure CLI — Definir Política LTR</span></div>
+        <pre><span class="code-comment"># Configurar retenção: 30 dias (semanal), 365 dias (mensal) e 5 anos (anual)</span>
+az sql db ltr-policy set \
+  --resource-group rg-sql-dimdim \
+  --server sql-server-dimdim-rm9999-eastus2 \
+  --name db-dimdim \
+  --weekly-retention P30D \
+  --monthly-retention P365D \
+  --yearly-retention P1825D \
+  --week-of-year 1
+
+<span class="code-comment"># Exibir a política LTR configurada em formato de tabela</span>
+az sql db ltr-policy show \
+  --resource-group rg-sql-dimdim \
+  --server sql-server-dimdim-rm9999-eastus2 \
+  --name db-dimdim -o table</pre>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr><th>Parâmetro</th><th>Duração / Significado</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>--weekly-retention P30D</code></td><td>Mantém os backups semanais armazenados por 30 dias (1 mês).</td></tr>
+            <tr><td><code>--monthly-retention P365D</code></td><td>Mantém os backups mensais armazenados por 365 dias (1 ano).</td></tr>
+            <tr><td><code>--yearly-retention P1825D</code></td><td>Mantém os backups anuais armazenados por 1825 dias (5 anos).</td></tr>
+            <tr><td><code>--week-of-year 1</code></td><td>Indica que o backup anual de referência será extraído na 1ª semana do ano.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Grupos de Failover -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+        </svg>
+        Configuração do Grupo de Failover (Failover Group)
+      </h2>
+
+      <div class="subsection">
+        <h3 class="subsection-title">1. Criar o Grupo de Failover</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Azure CLI — Criar Failover Group</span></div>
+          <pre>az sql failover-group create \
+  --name failover-group-dimdim-rm9999 \
+  --resource-group rg-sql-dimdim \
+  --server sql-server-dimdim-rm9999-eastus2 \
+  --partner-server sql-server-dimdim-rm9999-westus2 \
+  --partner-resource-group rg-sql-dimdim \
+  --failover-policy Automatic \
+  --grace-period 1</pre>
+        </div>
+
+        <div class="callout callout-info">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <div>
+            <div class="callout-title">Grace Period</div>
+            <p>O <code>--grace-period</code> define o tempo em horas (mínimo de 1 hora) que a Azure aguarda após detectar uma falha no servidor primário antes de acionar o failover automático com possível perda de dados assíncronos pendentes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection-title">2. Associar o Banco de Dados ao Grupo</h3>
+        <div class="code-block">
+          <div class="code-header"><span>bash</span><span>Azure CLI — Associar DB ao Failover Group</span></div>
+          <pre>az sql failover-group update \
+  --name failover-group-dimdim-rm9999 \
+  --resource-group rg-sql-dimdim \
+  --server sql-server-dimdim-rm9999-eastus2 \
+  --add-db db-dimdim</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conexão Externa: SSMS e Azure Data Studio -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+        </svg>
+        Conexão Externa (SSMS e Azure Data Studio)
+      </h2>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Parâmetro de Conexão</th>
+              <th>Valor Configurado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Tipo de Servidor</strong></td><td>Mecanismo de Banco de Dados (Database Engine)</td></tr>
+            <tr><td><strong>Nome do Servidor (Endpoint)</strong></td><td><code>sql-server-dimdim-rm9999-eastus2.database.windows.net</code></td></tr>
+            <tr><td><strong>Autenticação</strong></td><td>Autenticação do SQL Server</td></tr>
+            <tr><td><strong>Login</strong></td><td><code>user-dimdim</code></td></tr>
+            <tr><td><strong>Senha</strong></td><td><code>Fiap@2tdsvms</code></td></tr>
+            <tr><td><strong>Porta Padrão</strong></td><td><code>1433</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>sql</span><span>T-SQL — Consulta de Validação</span></div>
+        <pre>SELECT * FROM transacoes;</pre>
+      </div>
+    </section>
+
+    <!-- Limpeza de Recursos -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+        </svg>
+        Limpeza e Desalocação
+      </h2>
+
+      <div class="callout callout-danger">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <div>
+          <div class="callout-title">Desalocação de Recursos</div>
+          <p>Ao finalizar os testes e exercícios práticos, remova o Resource Group para evitar custos residuais na conta de nuvem.</p>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header"><span>bash</span><span>Azure CLI — Cleanup</span></div>
+        <pre><span class="code-comment"># Excluir o grupo de recursos e todos os serviços vinculados em cascata</span>
+az group delete --name rg-sql-dimdim --yes --no-wait</pre>
+      </div>
+    </section>
+
+    <!-- Documentação Oficial -->
+    <section class="section">
+      <h2 class="section-title">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+        </svg>
+        Documentação e Referência
+      </h2>
+      <div class="links-grid">
+        <a href="https://learn.microsoft.com/pt-br/azure/azure-sql/database/" target="_blank" class="link-card">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+          </svg>
+          <div class="link-info">
+            <span class="link-title">Documentação Oficial Azure SQL</span>
+            <span class="link-sub">learn.microsoft.com/azure-sql</span>
+          </div>
+        </a>
+        <a href="https://learn.microsoft.com/pt-br/azure/azure-sql/database/auto-failover-group-overview" target="_blank" class="link-card">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          <div class="link-info">
+            <span class="link-title">Grupos de Failover do Azure SQL</span>
+            <span class="link-sub">learn.microsoft.com/auto-failover-group</span>
+          </div>
+        </a>
+        <a href="https://learn.microsoft.com/pt-br/azure-data-studio/download-azure-data-studio" target="_blank" class="link-card">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          <div class="link-info">
+            <span class="link-title">Azure Data Studio Download</span>
+            <span class="link-sub">learn.microsoft.com/azure-data-studio</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </div>
+
+</body>
+</html>
